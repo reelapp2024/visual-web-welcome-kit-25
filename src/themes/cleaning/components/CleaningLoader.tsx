@@ -12,7 +12,7 @@ const CleaningLoader = () => {
           </div>
           <div className="absolute inset-0 w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mx-auto animate-ping opacity-75"></div>
         </div>
-        <p className="text-xl font-semibold text-gray-700 mt-4">Loading Services...</p>
+        <p className="text-xl font-semibold text-gray-700 mt-4">Loading</p>
         <div className="flex space-x-1 justify-center mt-2">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>

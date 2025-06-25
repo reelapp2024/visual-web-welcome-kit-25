@@ -12,7 +12,7 @@ const PaintingLoader = () => {
           </div>
           <div className="absolute inset-0 w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto animate-ping opacity-75"></div>
         </div>
-        <p className="text-xl font-semibold text-gray-700 mt-4">Loading Painting Services...</p>
+        <p className="text-xl font-semibold text-gray-700 mt-4">Loading</p>
         <div className="flex space-x-1 justify-center mt-2">
           <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
           <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>

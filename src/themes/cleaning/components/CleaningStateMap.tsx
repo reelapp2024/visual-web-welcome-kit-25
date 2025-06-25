@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -14,6 +14,7 @@ interface CleaningStateMapProps {
 const CleaningStateMap = ({ stateName, countryName }: CleaningStateMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   // Combined state and country coordinates mapping
   const locationCoordinates: { [key: string]: { center: [number, number]; zoom: number } } = {
@@ -97,78 +98,102 @@ const CleaningStateMap = ({ stateName, countryName }: CleaningStateMapProps) => 
   };
 
   useEffect(() => {
-    if (map.current) return; // prevent map from initializing more than once
-    if (!mapboxgl.accessToken) return;
-
-    // Create lookup key for state-country combination
-    const normalizedState = stateName.toLowerCase().trim();
-    const normalizedCountry = countryName.toLowerCase().trim();
-    const lookupKey = `${normalizedState}-${normalizedCountry}`;
+    if (!mapContainer.current || !mapboxgl.accessToken) return;
     
-    console.log('Looking for location:', lookupKey);
-    
-    // Try to find specific state-country combination first
-    let locationData = locationCoordinates[lookupKey];
-    
-    // If not found, try country fallback
-    if (!locationData) {
-      locationData = countryFallbacks[normalizedCountry];
-      console.log('Using country fallback for:', normalizedCountry);
-    }
-    
-    // Final fallback to world view
-    if (!locationData) {
-      locationData = { center: [0, 20], zoom: 2 };
-      console.log('Using world fallback');
+    // Clean up existing map
+    if (map.current) {
+      map.current.remove();
+      map.current = null;
     }
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current!,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: locationData.center,
-      zoom: locationData.zoom,
-      scrollZoom: true
-    });
+    // Small delay to ensure container is ready
+    const initTimeout = setTimeout(() => {
+      if (!mapContainer.current) return;
 
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      try {
+        // Create lookup key for state-country combination
+        const normalizedState = stateName.toLowerCase().trim();
+        const normalizedCountry = countryName.toLowerCase().trim();
+        const lookupKey = `${normalizedState}-${normalizedCountry}`;
+        
+        console.log('Looking for location:', lookupKey);
+        
+        // Try to find specific state-country combination first
+        let locationData = locationCoordinates[lookupKey];
+        
+        // If not found, try country fallback
+        if (!locationData) {
+          locationData = countryFallbacks[normalizedCountry];
+          console.log('Using country fallback for:', normalizedCountry);
+        }
+        
+        // Final fallback to world view
+        if (!locationData) {
+          locationData = { center: [0, 20], zoom: 2 };
+          console.log('Using world fallback');
+        }
 
-    map.current.on('load', () => {
-      // Add a marker for the state center
-      const el = document.createElement('div');
-      el.className = 'state-marker';
-      el.style.width = '40px';
-      el.style.height = '40px';
-      el.style.borderRadius = '50%';
-      el.style.background = '#10B981';
-      el.style.border = '4px solid white';
-      el.style.cursor = 'pointer';
-      el.style.boxShadow = '0 4px 15px rgba(16, 185, 129, 0.4)';
-      el.style.display = 'flex';
-      el.style.alignItems = 'center';
-      el.style.justifyContent = 'center';
-      el.innerHTML = '🏠';
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/light-v11',
+          center: locationData.center,
+          zoom: locationData.zoom,
+          scrollZoom: true
+        });
 
-      // Create popup for the state
-      const popup = new mapboxgl.Popup({ offset: 25, closeButton: true })
-        .setHTML(`
-          <div style="padding: 15px; min-width: 250px;">
-            <h4 style="margin: 0 0 10px 0; font-weight: bold; color: #10B981; font-size: 18px;">${stateName}, ${countryName}</h4>
-            <p style="margin: 0 0 8px 0; color: #666;">Professional cleaning services available in ${stateName}, ${countryName}</p>
-            <p style="margin: 0; font-weight: bold; color: #059669;">✓ Licensed & Insured</p>
-            <p style="margin: 5px 0 0 0; font-weight: bold; color: #059669;">✓ 24/7 Emergency Service</p>
-          </div>
-        `);
+        // Add navigation controls
+        map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-      // Add marker to map
-      new mapboxgl.Marker(el)
-        .setLngLat(locationData.center)
-        .setPopup(popup)
-        .addTo(map.current!);
-    });
+        map.current.on('load', () => {
+          setIsMapReady(true);
+          
+          // Add a marker for the state center
+          const el = document.createElement('div');
+          el.className = 'state-marker';
+          el.style.width = '40px';
+          el.style.height = '40px';
+          el.style.borderRadius = '50%';
+          el.style.background = '#10B981';
+          el.style.border = '4px solid white';
+          el.style.cursor = 'pointer';
+          el.style.boxShadow = '0 4px 15px rgba(16, 185, 129, 0.4)';
+          el.style.display = 'flex';
+          el.style.alignItems = 'center';
+          el.style.justifyContent = 'center';
+          el.innerHTML = '🏠';
+
+          // Create popup for the state
+          const popup = new mapboxgl.Popup({ offset: 25, closeButton: true })
+            .setHTML(`
+              <div style="padding: 15px; min-width: 250px;">
+                <h4 style="margin: 0 0 10px 0; font-weight: bold; color: #10B981; font-size: 18px;">${stateName}, ${countryName}</h4>
+                <p style="margin: 0 0 8px 0; color: #666;">Professional cleaning services available in ${stateName}, ${countryName}</p>
+                <p style="margin: 0; font-weight: bold; color: #059669;">✓ Licensed & Insured</p>
+                <p style="margin: 5px 0 0 0; font-weight: bold; color: #059669;">✓ 24/7 Emergency Service</p>
+              </div>
+            `);
+
+          // Add marker to map
+          new mapboxgl.Marker(el)
+            .setLngLat(locationData.center)
+            .setPopup(popup)
+            .addTo(map.current!);
+        });
+
+        map.current.on('error', (e) => {
+          console.error('Map error:', e);
+        });
+      } catch (error) {
+        console.error('Error initializing map:', error);
+      }
+    }, 100);
 
     return () => {
-      map.current?.remove();
+      clearTimeout(initTimeout);
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, [stateName, countryName]);
 
@@ -184,11 +209,18 @@ const CleaningStateMap = ({ stateName, countryName }: CleaningStateMapProps) => 
           </p>
         </div>
         
-        <div 
-          ref={mapContainer} 
-          className="map-container h-[500px] rounded-2xl shadow-2xl border border-gray-200" 
-          style={{ width: '100%' }} 
-        />
+        <div className="relative">
+          <div 
+            ref={mapContainer} 
+            className="map-container h-[500px] rounded-2xl shadow-2xl border border-gray-200" 
+            style={{ width: '100%' }} 
+          />
+          {!isMapReady && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-2xl">
+              <div className="text-gray-500">Loading map...</div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

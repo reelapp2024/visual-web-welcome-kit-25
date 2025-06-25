@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from 'react';
+
+import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -17,6 +18,7 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   // Don't render if we don't have coordinates
   if (lat == null || lng == null) {
@@ -24,63 +26,83 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
   }
 
   useEffect(() => {
+    if (!mapContainer.current || !mapboxgl.accessToken) return;
+    
+    // Clean up existing map
     if (map.current) {
-      // Recenter the map when lat/lng change
-      map.current.setCenter([lng, lat]);
-    } else {
-      if (!mapboxgl.accessToken) return;
-
-      // Initialize the map
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current!,  // map container reference
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [lng, lat],  // Initial center based on lat and lng
-        zoom: 3,
-        scrollZoom: true
-      });
-
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-      // Add a marker when the map loads
-      map.current.on('load', () => {
-        const el = document.createElement('div');
-        el.className = 'country-marker';
-        Object.assign(el.style, {
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          background: '#10B981',
-          border: '4px solid white',
-          cursor: 'pointer',
-          boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        });
-        el.innerHTML = '🏠';
-
-        const popup = new mapboxgl.Popup({ offset: 25, closeButton: true })
-          .setHTML(`
-            <div style="padding:15px; min-width:200px;">
-              <h4 style="margin:0 0 10px 0; color:#10B981; font-size:18px;">
-                ${locationName || 'Location'}
-              </h4>
-              <p style="margin:0;color:#666;">Professional services available</p>
-            </div>
-          `);
-
-        new mapboxgl.Marker(el)
-          .setLngLat([lng, lat])
-          .setPopup(popup)
-          .addTo(map.current!);
-      });
+      map.current.remove();
+      map.current = null;
     }
+
+    // Small delay to ensure container is ready
+    const initTimeout = setTimeout(() => {
+      if (!mapContainer.current) return;
+
+      try {
+        // Initialize the map
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [lng, lat],
+          zoom: 3,
+          scrollZoom: true
+        });
+
+        map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+        // Add a marker when the map loads
+        map.current.on('load', () => {
+          setIsMapReady(true);
+          
+          const el = document.createElement('div');
+          el.className = 'country-marker';
+          Object.assign(el.style, {
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            background: '#10B981',
+            border: '4px solid white',
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          });
+          el.innerHTML = '🏠';
+
+          const popup = new mapboxgl.Popup({ offset: 25, closeButton: true })
+            .setHTML(`
+              <div style="padding:15px; min-width:200px;">
+                <h4 style="margin:0 0 10px 0; color:#10B981; font-size:18px;">
+                  ${locationName || 'Location'}
+                </h4>
+                <p style="margin:0;color:#666;">Professional services available</p>
+              </div>
+            `);
+
+          new mapboxgl.Marker(el)
+            .setLngLat([lng, lat])
+            .setPopup(popup)
+            .addTo(map.current!);
+        });
+
+        map.current.on('error', (e) => {
+          console.error('Map error:', e);
+        });
+      } catch (error) {
+        console.error('Error initializing map:', error);
+      }
+    }, 100);
 
     // Cleanup on component unmount
     return () => {
-      map.current?.remove();
+      clearTimeout(initTimeout);
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
-  }, [lat, lng, locationName]);  // Re-run effect if lat, lng, or locationName changes
+  }, [lat, lng, locationName]);
 
   return (
     <section className="py-20 bg-gray-50 font-poppins">
@@ -98,6 +120,11 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
           className="map-container h-[500px] rounded-2xl shadow-2xl border border-gray-200"
           style={{ width: '100%' }}
         />
+        {!isMapReady && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-2xl">
+            <div className="text-gray-500">Loading map...</div>
+          </div>
+        )}
       </div>
     </section>
   );

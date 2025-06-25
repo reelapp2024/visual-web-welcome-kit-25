@@ -12,7 +12,7 @@ const PlumbingLoader = () => {
           </div>
           <div className="absolute inset-0 w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mx-auto animate-ping opacity-75"></div>
         </div>
-        <p className="text-xl font-semibold text-gray-700 mt-4">Loading Plumbing Services...</p>
+        <p className="text-xl font-semibold text-gray-700 mt-4">Loading</p>
         <div className="flex space-x-1 justify-center mt-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
           <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
