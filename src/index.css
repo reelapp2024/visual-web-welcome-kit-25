@@ -101,3 +101,10 @@
     @apply bg-background text-foreground font-poppins;
   }
 }
+p {
+  font-size: 15px !important;
+}
+.text-4xl{
+    font-size: 2.5rem !important;
+    line-height: 1.32 !important;
+  }
