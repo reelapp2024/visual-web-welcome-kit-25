@@ -63,7 +63,7 @@ const CleaningCity = () => {
   const [pageLocation, setPageLocation] = useState("");
 
   const savedSiteId = localStorage.getItem("currentSiteId");
-  let projectId = savedSiteId || "685bf8e93f68ae53bc89381a";
+  let projectId = savedSiteId || "685cffa53ee7098086538c06";
   const [locations, setLocations] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);

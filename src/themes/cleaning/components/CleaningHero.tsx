@@ -20,14 +20,19 @@ export default function CleaningHero() {
   const [phoneNumber, setPhoneNumber]       = useState('');
   const [features, setFeatures]             = useState<Feature[]>([]);
   const [isLoading, setIsLoading]           = useState(true);
-
+  const [heroHeadingPart1, setHeroHeadingPart1] = useState('');
+  const [heroHeadingPart2, setHeroHeadingPart2] = useState('');
+const conjunctions = [
+  'and', 'or', 'but', 'with', 'for', 'as', 'because', 'so', 'then', 'by', 'on', 'at', 
+  'in', 'of', 'to', 'from', 'about', 'through', 'between', 'during', 'before', 'after'
+];
   // projectId from query or localStorage
   const urlParams = new URLSearchParams(window.location.search);
   const site = urlParams.get('siteId');
   if (site && localStorage.getItem('currentSiteId') !== site) {
     localStorage.setItem('currentSiteId', site);
   }
-  const projectId = localStorage.getItem('currentSiteId') || '685bf8e93f68ae53bc89381a';
+  const projectId = localStorage.getItem('currentSiteId') || '68593752dd530358b97f0a3f';
 
   useEffect(() => {
     (async () => {
@@ -44,6 +49,40 @@ export default function CleaningHero() {
         setProjectCategory(info.serviceType || '');
         setWelcomeLine(info.welcomeLine   || '');
         setPhoneNumber(about.phone       || '');
+        // Split heroHeading intelligently
+        const words = info.heroHeading?.split(' ') || [];
+
+        // If heading has more than 3 words, attempt to split based on meaningful conjunctions
+        if (words.length > 3) {
+          let breakIndex = -1;
+          // Find the first occurrence of any conjunction or preposition
+          for (let i = 0; i < words.length; i++) {
+            if (conjunctions.includes(words[i].toLowerCase())) {
+              breakIndex = i;
+              break;
+            }
+          }
+
+          if (breakIndex !== -1) {
+            // Split at the first meaningful conjunction
+            setHeroHeadingPart1(words.slice(0, breakIndex + 1).join(' ') || '');
+            setHeroHeadingPart2(words.slice(breakIndex + 1).join(' ') || '');
+          } else {
+            // Fallback to split the first part with a few words, and second part with the rest
+            setHeroHeadingPart1(words.slice(0, words.length - 2).join(' ') || '');
+            setHeroHeadingPart2(words.slice(-2).join(' ') || '');
+          }
+        } else {
+          // For 2 or 3 words, use a simpler split
+          if (words.length === 3) {
+            setHeroHeadingPart1(words.slice(0, 1).join(' ') || '');
+            setHeroHeadingPart2(words.slice(1).join(' ') || '');
+          } else {
+            setHeroHeadingPart1(words.slice(0, 1).join(' ') || '');
+            setHeroHeadingPart2(words.slice(1).join(' ') || '');
+          }
+        }
+
 setProjectSlogan(info.projectSlogan || `Professional ${info.serviceType}`);
         // sanitize helper
         const strip = (s: any) =>
@@ -102,9 +141,9 @@ setProjectSlogan(info.projectSlogan || `Professional ${info.serviceType}`);
         {/* Heading */}
         <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
           <span className="bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
-            Sparkling {projectCategory}
+             {heroHeadingPart1}
           </span><br/>
-          <span className="text-emerald-300">Every Time</span>
+          <span className="text-emerald-300">{heroHeadingPart2}</span>
         </h1>
 
         {/* Subheading */}

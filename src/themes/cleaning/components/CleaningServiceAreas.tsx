@@ -26,7 +26,7 @@ const CleaningServiceAreas = () => {
 
   // 3) Now read back from localStorage (or fall back to default):
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685bf8e93f68ae53bc89381a";
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
     const fetchData = async () => {

@@ -72,8 +72,8 @@ const CleaningFooter = () => {
               <li><Link to="/about" className="text-gray-300 hover:text-green-500 transition-colors">About Us</Link></li>
               <li><Link to="/areas" className="text-gray-300 hover:text-green-500 transition-colors">Service Areas</Link></li>
               <li><Link to="/contact" className="text-gray-300 hover:text-green-500 transition-colors">Contact Us</Link></li>
-              <li><Link to="/cleaning/terms-conditions" className="text-gray-300 hover:text-green-500 transition-colors">Terms & Conditions</Link></li>
-              <li><Link to="/cleaning/privacy-policy" className="text-gray-300 hover:text-green-500 transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms-conditions" className="text-gray-300 hover:text-green-500 transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/privacy-policy" className="text-gray-300 hover:text-green-500 transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 

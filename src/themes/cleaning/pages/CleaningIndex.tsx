@@ -20,7 +20,7 @@ const CleaningIndex = () => {
   const [CTA, setCTA] = useState([]);
 
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685bf8e93f68ae53bc89381a";
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   console.log(projectId ,"<<<<ProjectId")
 
@@ -58,6 +58,8 @@ const CleaningIndex = () => {
     <div className="min-h-screen font-poppins">
       <CleaningHeader />
       <CleaningHero />
+
+     
       <CleaningAboutUs />
       <CleaningServices />
       {/* First CTA */}

@@ -30,7 +30,7 @@ const [aboutService, setAboutService] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685bf8e93f68ae53bc89381a";
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
   const locationName = location.state?.locationName ? `in ${location.state.locationName}` : '';
   const [serviceId, setServiceId] = useState(location.state?.serviceId || "");
   const displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
@@ -83,6 +83,8 @@ const [aboutService, setAboutService] = useState('');
           setStepProcess(data.service.steps_process || []);
           setAboutService(data.service.about_service || '');
           setIsLoading(false);
+
+          console.log(data.service,"data service!!!!")
         }
       } catch (error) {
         console.error("Error fetching service details:", error);

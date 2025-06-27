@@ -74,8 +74,8 @@ const App = () => (
           <Route path="/maps" element={<PlumbingMaps />} />
           
           {/* Theme-specific Legal Pages */}
-          <Route path="/cleaning/terms-conditions" element={<CleaningTermsConditions />} />
-          <Route path="/cleaning/privacy-policy" element={<CleaningPrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<CleaningTermsConditions />} />
+          <Route path="/privacy-policy" element={<CleaningPrivacyPolicy />} />
           <Route path="/plumbing/terms-conditions" element={<PlumbingTermsConditions />} />
           <Route path="/plumbing/privacy-policy" element={<PlumbingPrivacyPolicy />} />
           <Route path="/hvac/terms-conditions" element={<HVACTermsConditions />} />

@@ -38,13 +38,15 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
     const initTimeout = setTimeout(() => {
       if (!mapContainer.current) return;
 
+      
+
       try {
         // Initialize the map
         map.current = new mapboxgl.Map({
           container: mapContainer.current,
           style: 'mapbox://styles/mapbox/streets-v11',
           center: [lng, lat],
-          zoom: 3,
+          zoom: 8,
           scrollZoom: true
         });
 
