@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import CleaningHeader from '../components/CleaningHeader';
@@ -10,7 +11,7 @@ import CleaningGuarantee from '../components/CleaningGuarantee';
 import CleaningRelatedServices from '../components/CleaningRelatedServices';
 import CleaningServiceAreas from '../components/CleaningServiceAreas';
 import CleaningFooter from '../components/CleaningFooter';
-import { Sparkles, Phone } from 'lucide-react';
+import { Sparkles, Phone, CheckCircle } from 'lucide-react';
 import { httpFile } from "../../../config.js";
 import humanizeString from "../../../extras/stringUtils.js";
 
@@ -26,7 +27,8 @@ const CleaningServiceDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [reloadFlag, setReloadFlag] = useState(0);
-const [aboutService, setAboutService] = useState('');
+  const [aboutService, setAboutService] = useState('');
+  const [subServices, setSubServices] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
   const savedSiteId = localStorage.getItem("currentSiteId");
@@ -82,6 +84,13 @@ const [aboutService, setAboutService] = useState('');
           setProjectBaseImage(data.service.images?.[2]?.url || "");
           setStepProcess(data.service.steps_process || []);
           setAboutService(data.service.about_service || '');
+          
+          // Parse subServices from comma-separated string
+          const subServicesArray = data.service.subServices 
+            ? data.service.subServices.split(',').map(item => item.trim()).filter(Boolean)
+            : [];
+          setSubServices(subServicesArray);
+          
           setIsLoading(false);
 
           console.log(data.service,"data service!!!!")
@@ -148,7 +157,7 @@ const [aboutService, setAboutService] = useState('');
         </div>
       </section>
 
-{/* ==== NEW “ABOUT” SECTION ==== */}
+{/* ==== NEW "ABOUT" SECTION ==== */}
 {aboutService && (
   <section className="py-16 bg-white font-poppins">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -162,6 +171,38 @@ const [aboutService, setAboutService] = useState('');
   </section>
 )}
 
+{/* ==== NEW SUB-SERVICES SECTION ==== */}
+{subServices.length > 0 && (
+  <section className="py-16 bg-gradient-to-br from-gray-50 to-white font-poppins">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+          Our {displayServiceName} Services Include
+        </h2>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          We offer comprehensive {displayServiceName.toLowerCase()} services to meet all your needs.
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {subServices.map((service, index) => (
+          <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 group hover:-translate-y-2">
+            <div className="flex items-start space-x-4">
+              <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-all duration-300">
+                <CheckCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors duration-300">
+                  {service}
+                </h3>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
       <section className="py-20 bg-gradient-to-br from-gray-50 to-white font-poppins">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

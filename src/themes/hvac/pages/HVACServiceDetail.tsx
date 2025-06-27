@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import HVACHeader from '../components/HVACHeader';
 import HVACCTA from '../components/HVACCTA';
@@ -11,7 +11,9 @@ import HVACGuarantee from '../components/HVACGuarantee';
 import HVACRelatedServices from '../components/HVACRelatedServices';
 import HVACServiceAreas from '../components/HVACServiceAreas';
 import HVACFooter from '../components/HVACFooter';
-import { Wind, Phone } from 'lucide-react';
+import { Wind, Phone, CheckCircle } from 'lucide-react';
+import { httpFile } from "../../../config.js";
+import humanizeString from "../../../extras/stringUtils.js";
 
 interface HVACServiceDetailProps {
   serviceId?: string;
@@ -20,12 +22,65 @@ interface HVACServiceDetailProps {
   serviceImage?: string;
 }
 
-const HVACServiceDetail = ({ serviceId, serviceName, serviceDescription, serviceImage }: HVACServiceDetailProps) => {
+const HVACServiceDetail = ({ serviceId: propServiceId, serviceName, serviceDescription, serviceImage }: HVACServiceDetailProps) => {
   const { serviceName: urlServiceName } = useParams();
+  const [serviceDetails, setServiceDetails] = useState(null);
+  const [subServices, setSubServices] = useState([]);
+  const [serviceId, setServiceId] = useState(propServiceId || "");
   
-  const displayServiceName = serviceName || urlServiceName || 'HVAC Installation';
-  const displayServiceDescription = serviceDescription || 'Professional HVAC installation and repair services with energy-efficient systems and expert technicians. Licensed and insured contractors.';
-  const displayServiceImage = serviceImage || 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+  
+  const displayServiceName = serviceName || humanizeString(urlServiceName) || 'HVAC Installation';
+  const displayServiceDescription = serviceDescription || serviceDetails?.service_description || 'Professional HVAC installation and repair services with energy-efficient systems and expert technicians. Licensed and insured contractors.';
+  const displayServiceImage = serviceImage || serviceDetails?.images?.[0]?.url || 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+
+  // Fetch service ID if not provided
+  useEffect(() => {
+    const fetchServiceId = async () => {
+      if (!serviceId && displayServiceName) {
+        try {
+          const { data } = await httpFile.post("/webapp/v1/fetch_service_by_name_and_project", {
+            projectId,
+            serviceName: displayServiceName,
+          });
+
+          if (data?.serviceId) {
+            setServiceId(data.serviceId);
+          }
+        } catch (error) {
+          console.error("Error fetching service ID:", error);
+        }
+      }
+    };
+
+    fetchServiceId();
+  }, [projectId, displayServiceName, serviceId]);
+
+  // Fetch service details
+  useEffect(() => {
+    const fetchServiceData = async () => {
+      if (!serviceId) return;
+
+      try {
+        const { data } = await httpFile.post("/webapp/v1/fetch_service", { serviceId });
+
+        if (data.service) {
+          setServiceDetails(data.service);
+          
+          // Parse subServices from comma-separated string
+          const subServicesArray = data.service.subServices 
+            ? data.service.subServices.split(',').map(item => item.trim()).filter(Boolean)
+            : [];
+          setSubServices(subServicesArray);
+        }
+      } catch (error) {
+        console.error("Error fetching service details:", error);
+      }
+    };
+
+    fetchServiceData();
+  }, [serviceId]);
 
   return (
     <div className="min-h-screen font-poppins">
@@ -68,6 +123,39 @@ const HVACServiceDetail = ({ serviceId, serviceName, serviceDescription, service
           </div>
         </div>
       </section>
+
+      {/* Sub-Services Section */}
+      {subServices.length > 0 && (
+        <section className="py-16 bg-gradient-to-br from-gray-50 to-white font-poppins">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent mb-4">
+                Our {displayServiceName} Services Include
+              </h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                We offer comprehensive {displayServiceName.toLowerCase()} services to meet all your needs.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {subServices.map((service, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 group hover:-translate-y-2">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-gradient-to-br from-red-500 to-blue-500 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-all duration-300">
+                      <CheckCircle className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-red-600 transition-colors duration-300">
+                        {service}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <HVACAboutUs />
       <HVACProcess />
