@@ -1,39 +1,33 @@
 
-import React, { useEffect, useState } from 'react';
-import { httpFile } from "../../../config.js";
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Sparkles } from 'lucide-react';
+import { useCTAData } from '../../../hooks/useCTAData.js';
 
 const CleaningCTA = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [CTA, setCTA] = useState("");
-  const [projectCategory, setProjectCategory] = useState("");
+  const {
+    phoneNumber,
+    CTA,
+    projectCategory,
+    isLoading
+  } = useCTAData();
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await httpFile.post("/webapp/v1/my_site", {
-          projectId,
-          pageType: "home",
-          reqFrom:"CTA"
-          
-        });
-
-        if (data.projectInfo && data.projectInfo.serviceType) {
-          setCTA(data.projectInfo.callToAction);
-          setPhoneNumber(data.aboutUs.phone);
-          setProjectCategory(data.projectInfo.serviceType);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [projectId]);
+  if (isLoading) {
+    return (
+      <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="animate-pulse">
+            <div className="bg-white/20 h-8 w-64 mx-auto mb-4 rounded"></div>
+            <div className="bg-white/20 h-4 w-96 mx-auto mb-8 rounded"></div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="bg-white/20 h-12 w-48 rounded-full"></div>
+              <div className="bg-white/20 h-12 w-48 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">

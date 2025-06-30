@@ -1,46 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { httpFile } from "../../../config.js";
-import { Link } from 'react-router-dom';
-import { Phone, Menu, X, Sparkles } from 'lucide-react';
 
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Phone, Menu, X } from 'lucide-react';
+import { useHeaderData } from '../../../hooks/useHeaderData.js';
 
 const CleaningHeader = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectCategory, setProjectCategory] = useState("");
-  const [projectFasFA, setProjectFasFA] = useState("");
-
-  const [projectSlogan, setProjectSlogan] = useState('');
-
-
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cf1df97cf8c6eae413b5e";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await httpFile.post("/webapp/v1/my_site", {
-          projectId,
-          pageType: "home"
-        });
-
-        if (data.projectInfo && data.projectInfo.serviceType) {
-
-          setPhoneNumber(data.aboutUs.phone);
-          setProjectName(data.projectInfo.projectName);
-          setProjectCategory(data.projectInfo.serviceType);
-          setProjectFasFA(data.projectInfo.defaultFasFaIcon);
-          setProjectSlogan(data.projectInfo.projectSlogan || `Professional ${data.projectInfo.serviceType}`);
-
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [projectId]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const {
+    phoneNumber,
+    projectName,
+    projectCategory,
+    projectFasFA,
+    projectSlogan,
+    isLoading
+  } = useHeaderData();
 
   const navigationItems = [
     { name: 'Home', href: '/' },
@@ -50,18 +24,30 @@ const CleaningHeader = () => {
     { name: 'Contact', href: '/contact' }
   ];
 
+  if (isLoading) {
+    return (
+      <header className="bg-white shadow-lg sticky top-0 z-50 font-poppins">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="animate-pulse bg-gray-200 h-8 w-48 rounded"></div>
+            <div className="animate-pulse bg-gray-200 h-8 w-32 rounded"></div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50 font-poppins">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <div className="flex items-center">
-            {/* <div className="bg-gradient-to-br from-green-600 to-emerald-600 p-2 rounded-xl mr-3 shadow-lg"> */}
             <div
               style={{
                 fontSize: '2rem',
                 color: '#fff',
-                background: 'linear-gradient(145deg, #38a169, #2f855a)', // Subtle 3D gradient
+                background: 'linear-gradient(145deg, #38a169, #2f855a)',
                 width: '48px',
                 height: '48px',
                 display: 'flex',
@@ -89,13 +75,11 @@ const CleaningHeader = () => {
               <i className={`fas ${projectFasFA}`}></i>
             </div>
 
-            {/* </div> */}
-
             <Link to="/">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 {projectName}
               </h1>
-              <p className="text-sm text-gray-600"> {projectSlogan}</p>
+              <p className="text-sm text-gray-600">{projectSlogan}</p>
             </Link>
           </div>
 
@@ -116,7 +100,6 @@ const CleaningHeader = () => {
           <div className="hidden md:flex items-center">
             <a
               href={`tel:${phoneNumber}`}
-
               className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-full font-bold flex items-center space-x-2 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <Phone size={18} />
@@ -148,7 +131,7 @@ const CleaningHeader = () => {
                 </Link>
               ))}
               <a
-                href={`tel:${phoneNumber}`} 
+                href={`tel:${phoneNumber}`}
                 className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-full font-bold flex items-center justify-center space-x-2 w-full"
               >
                 <Phone size={18} />

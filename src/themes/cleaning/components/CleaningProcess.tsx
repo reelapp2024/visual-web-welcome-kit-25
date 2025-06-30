@@ -1,49 +1,36 @@
 
-import React ,{useEffect, useState} from 'react';
-import { httpFile } from "../../../config.js";
-import { Phone, Calendar, Sparkles, CheckCircle } from 'lucide-react';
-import DynamicFAIcon from '../../../extras/DynamicFAIcon.js'; // make sure the path is correct
+import React from 'react';
+import { useProcessData } from '../../../hooks/useProcessData.js';
+import DynamicFAIcon from '../../../extras/DynamicFAIcon.js';
 
 const CleaningProcess = () => {
+  const {
+    projectOurProcess,
+    projectCategory,
+    isLoading
+  } = useProcessData();
 
-
-    const [projectOurProcess, setprojectOurProcess] = useState([]);
-    const [projectCategory, setProjectCategory] = useState("");
-  
-   const savedSiteId = localStorage.getItem("currentSiteId");
-    const projectId = savedSiteId || "685cffa53ee7098086538c06";
-    console.log(projectId, "This is project id in services section");
-
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const { data } = await httpFile.post("/webapp/v1/my_site", {
-              projectId,
-              pageType: "home",
-          reqFrom:"Process"
-
-            });
-    
-            if (data.projectInfo ) {
-          setProjectCategory(data.projectInfo.serviceType);
-            
-              setprojectOurProcess(data.projectInfo.ourProcessSection);
-             
-            }
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
-    
-        fetchData();
-      }, [projectId]);
-
-
-
-
-
-
-  console.log(projectOurProcess,"projectOurProcessprojectOurProcessprojectOurProcessprojectOurProcessprojectOurProcess")
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-white font-poppins">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="animate-pulse">
+              <div className="bg-gray-200 h-12 w-64 mx-auto mb-6 rounded"></div>
+              <div className="bg-gray-200 h-4 w-96 mx-auto rounded"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-gray-200 rounded-2xl h-64"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-white font-poppins">
@@ -62,20 +49,16 @@ const CleaningProcess = () => {
             <div key={index} className="text-center relative group">
               {/* Step Number */}
               <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-xl z-10 shadow-xl group-hover:scale-110 transition-all duration-300">
-                {index + 1 }
+                {index + 1}
               </div>
               
               {/* Card */}
               <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-                {/* <div className={`bg-gradient-to-br ${step.gradient} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 text-white shadow-xl group-hover:scale-110 transition-all duration-300`}>
-                  {step.icon}
-                </div> */}
-  <div
+                <div
                   className={`bg-gradient-to-br ${step.gradient || 'from-gray-400 to-gray-600'
                     } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
                 >
-                    <DynamicFAIcon iconClass={step.iconClass || ''} />
-                  {/* Changed icon color to green-500 */}
+                  <DynamicFAIcon iconClass={step.iconClass || ''} />
                 </div>
 
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.title}</h3>
