@@ -148,11 +148,11 @@ const CleaningHeader = () => {
                 </Link>
               ))}
               <a
-                href="tel:5551234567"
+                href={`tel:${phoneNumber}`} 
                 className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-full font-bold flex items-center justify-center space-x-2 w-full"
               >
                 <Phone size={18} />
-                <span>(555) 123-4567</span>
+                <span>{phoneNumber}</span>
               </a>
             </div>
           </div>

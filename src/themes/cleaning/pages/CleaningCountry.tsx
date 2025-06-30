@@ -48,6 +48,7 @@ const CleaningCountry = () => {
   const [projectFaqs, setprojectFaqs] = useState([]);
   const [projectCategory, setProjectCategory] = useState("");
   const [welcomeLine, setWelcomeLine] = useState("");
+  const [showName, setShowName] = useState("");
 
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -68,18 +69,21 @@ const CleaningCountry = () => {
   let { id, UpcomingPage, nextPage, locationName, sortname, _id } = location.state || {};
 
   // Get city name from URL for city/local area pages
-  const cityName = pathname.split('/').pop();
+  let cityName = pathname.split('/').pop();
+  cityName=showName? showName:cityName
+
+
 
   const getPageTitle = () => {
     switch (pageType) {
       case 'country':
-        return `${projectCategory} services in ${humanizeString(pageLocation)}, ${sortname}`;
+        return `${projectCategory} services in ${cityName}`;
       case 'state':
-        return `${humanizeString(cityName)} ${projectCategory} Services`;
+        return `${cityName} ${projectCategory} Services`;
       case 'city':
-        return `${humanizeString(cityName)} ${projectCategory} Services`;
+        return `${cityName} ${projectCategory} Services`;
       case 'local_area':
-        return humanizeString(cityName);
+        return cityName;
       default:
         return `${projectCategory} services`;
     }
@@ -179,6 +183,7 @@ const CleaningCountry = () => {
           setProjectReviews(data.testimonials || []);
           setprojectFaqs(data.faq || []);
           setPageLocation(data.RefLocation || '');
+          setShowName(data.showName)
           setIsLoading(false);
 
           if (data.info && data.info.lat && data.info.lng) {
@@ -227,12 +232,12 @@ const CleaningCountry = () => {
 
     switch (pageType) {
       case 'country':
-        locationName = `${humanizeString(pageLocation)}${sortname ? `, ${sortname}` : ''}`;
+        locationName = cityName;
         break;
       case 'state':
       case 'city':
       case 'local_area':
-        locationName = humanizeString(cityName);
+        locationName = cityName;
         break;
     }
 
@@ -409,7 +414,7 @@ const CleaningCountry = () => {
                 </div>
                 <div className="p-8">
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    {service.service_name} in {pageType === 'country' ? `${humanizeString(pageLocation)}, ${sortname}` : humanizeString(cityName)}
+                    {service.service_name} in {cityName}
                   </h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">{getFirstSentence(service.service_description)}</p>
                 </div>
