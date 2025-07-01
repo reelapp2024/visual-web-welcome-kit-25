@@ -45,7 +45,7 @@ const CleaningCountry = () => {
   const [pageType, setPageType] = useState('');
   const [projectLocations, setProjectLocations] = useState([]);
   const [projectServices, setprojectServices] = useState([]);
-  const [projectReviews, setProjectReviews = useState<Testimonial[]>([]);
+  const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [projectFaqs, setprojectFaqs] = useState([]);
   const [projectCategory, setProjectCategory] = useState("");
@@ -55,7 +55,6 @@ const CleaningCountry = () => {
   const [stateDescription, setStateDescription] = useState("");
   const [cityDescription, setCityDescription] = useState("");
   const [localAreaDescription, setLocalAreaDescription] = useState("");
-
 
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -84,8 +83,6 @@ const CleaningCountry = () => {
   // Get city name from URL for city/local area pages
   let cityName = pathname.split('/').pop();
   cityName = showName ? showName : cityName
-
-
 
   const getPageTitle = () => {
     switch (pageType) {
@@ -199,8 +196,7 @@ const CleaningCountry = () => {
           setShowName(data.showName)
           setIsLoading(false);
 
-          if (data.projectInfo.descriptions) if (data?.projectInfo?.descriptions) {
-
+          if (data.projectInfo.descriptions) {
             console.log((data.projectInfo.descriptions))
             setCountryDescription(removeDot(data.projectInfo.descriptions[0] || "")); // Country description (index 0)
             setStateDescription(removeDot(data.projectInfo.descriptions[1] || ""));   // State description (index 1)
@@ -227,9 +223,10 @@ const CleaningCountry = () => {
       }
     };
 
-    fetchData();
+    if (pageType) {
+      fetchData();
+    }
   }, [pageType, projectId, slug]);
-
 
   const handleLocationClick = (locationName, id, _id, sortname) => {
     let locationToNavigate = `/${slug}/${slugify(locationName)}`;
@@ -253,7 +250,6 @@ const CleaningCountry = () => {
   };
 
   const handleServiceClick = (service: any) => {
-    // alert("hey you clicked on serfice")
     const serviceName = service.service_name.toLowerCase().replace(/\s+/g, '-');
     let locationName = '';
 
@@ -267,8 +263,6 @@ const CleaningCountry = () => {
         locationName = cityName;
         break;
     }
-
-    // alert(locationName)
 
     navigate(`/${slugify(locationName)}/services/${serviceName}`, {
       state: {
@@ -460,9 +454,6 @@ const CleaningCountry = () => {
             </div>
           </div>
         </section>
-
-
-
 
         <CleaningCTA />
         <CleaningWhyChooseUs />
