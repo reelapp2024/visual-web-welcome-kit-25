@@ -59,7 +59,11 @@ const CleaningHeader = () => {
     navigate(`/services/${serviceSlug}`, {
       state: {
         serviceId: service._id,
-        serviceName: service.service_name
+        serviceName: service.service_name,
+        serviceDescription: service.service_description,
+        serviceImage: service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
+        serviceImage1: service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
+        serviceImage2: service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
       }
     });
   };
@@ -68,7 +72,12 @@ const CleaningHeader = () => {
     navigate(`/${location.slug}`, {
       state: {
         locationData: location,
-        pageType: location.slugType
+        pageType: location.slugType,
+        id: location.location_id,
+        projectId,
+        UpcomingPage: location.slugType,
+        locationName: location.name,
+        _id: location.location_id
       }
     });
   };
