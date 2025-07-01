@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { httpFile } from "../../../config.js";
@@ -15,7 +16,6 @@ const CleaningServiceDetail = () => {
   const navigate = useNavigate();
   
   const [service, setService] = useState(null);
-  const [relatedServices, setRelatedServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -42,15 +42,6 @@ const CleaningServiceDetail = () => {
           setService(data.service);
         } else {
           setError("Service not found.");
-        }
-
-        // Fetch related services
-        const relatedServicesResponse = await httpFile.post("/webapp/v1/fetch_services", {
-          projectId,
-        });
-        
-        if (relatedServicesResponse.data) {
-          setRelatedServices(relatedServicesResponse.data.services || []);
         }
 
         // Fetch SEO data dynamically based on route
@@ -192,7 +183,7 @@ const CleaningServiceDetail = () => {
           </div>
         </section>
 
-        <CleaningRelatedServices relatedServices={relatedServices} />
+        <CleaningRelatedServices />
         <CleaningTestimonials />
         <CleaningCTA />
         <CleaningFooter />
