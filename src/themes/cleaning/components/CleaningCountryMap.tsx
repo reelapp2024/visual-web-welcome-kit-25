@@ -31,7 +31,7 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
   const getZoomLevel = (type: string) => {
     switch (type) {
       case 'country':
-        return 5;
+        return 3;
       case 'state':
         return 7;
       case 'city':

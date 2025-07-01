@@ -47,7 +47,7 @@ const CleaningIndex = () => {
         }
 
         // Fetch SEO data for home page
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/`);
+        const seoResponse = await httpFile.get(`/webapp/v1/seo/home`);
         setSeoData(seoResponse.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
