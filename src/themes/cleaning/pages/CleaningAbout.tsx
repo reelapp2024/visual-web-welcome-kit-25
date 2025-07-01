@@ -37,9 +37,9 @@ const CleaningAbout = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title || 'About Us - Professional Cleaning Services'}</title>
-        <meta name="description" content={seoData.meta_description || 'Learn about our professional cleaning company, our mission, values, and commitment to excellence.'} />
-        <meta name="keywords" content={seoData.meta_keywords || 'about us, cleaning company, professional cleaners, mission, values'} />
+        <title>{seoData.meta_title }</title>
+        <meta name="description" content={seoData.meta_description } />
+        <meta name="keywords" content={seoData.meta_keywords } />
       </Helmet>
       
       <div className="min-h-screen font-poppins">

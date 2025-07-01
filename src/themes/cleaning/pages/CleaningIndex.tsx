@@ -67,9 +67,9 @@ const CleaningIndex = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title || `Professional ${projectCategory} Services`}</title>
-        <meta name="description" content={seoData.meta_description || `Professional ${projectCategory} services with same-day booking and satisfaction guaranteed.`} />
-        <meta name="keywords" content={seoData.meta_keywords || `${projectCategory}, professional cleaning, same day booking`} />
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords } />
       </Helmet>
       
       <div className="min-h-screen font-poppins">
