@@ -1,5 +1,6 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { httpFile } from "../../../config.js";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
 import CleaningServices from '../components/CleaningServices';
@@ -12,45 +13,72 @@ import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
 
 const CleaningServicesPage = () => {
+  const [seoData, setSeoData] = useState({
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: ''
+  });
+
+  useEffect(() => {
+    const fetchSeoData = async () => {
+      try {
+        const seoResponse = await httpFile.get(`/webapp/v1/seo/services`);
+        setSeoData(seoResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching SEO data:", error);
+      }
+    };
+
+    fetchSeoData();
+  }, []);
+
   return (
-    <div className="min-h-screen font-poppins">
-      <CleaningHeader />
+    <HelmetProvider>
+      <Helmet>
+        <title>{seoData.meta_title || 'Professional Cleaning Services - Complete Solutions'}</title>
+        <meta name="description" content={seoData.meta_description || 'Comprehensive residential and commercial cleaning solutions with eco-friendly products and expert cleaners.'} />
+        <meta name="keywords" content={seoData.meta_keywords || 'cleaning services, residential cleaning, commercial cleaning, professional cleaners'} />
+      </Helmet>
       
-      {/* Services Hero */}
-      <section className="relative py-20 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden min-h-[500px] flex items-center">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ 
-            backgroundImage: 'url(https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2126&q=80)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-green-600/85 to-emerald-600/85"></div>
+      <div className="min-h-screen font-poppins">
+        <CleaningHeader />
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
-          <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-            <h1 className="text-4xl md:text-5xl font-bold">Professional Cleaning Services</h1>
+        {/* Services Hero */}
+        <section className="relative py-20 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden min-h-[500px] flex items-center">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ 
+              backgroundImage: 'url(https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2126&q=80)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-green-600/85 to-emerald-600/85"></div>
+          
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
+            <div className="flex items-center justify-center mb-4">
+              <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
+              <h1 className="text-4xl md:text-5xl font-bold">Professional Cleaning Services</h1>
+            </div>
+            <p className="text-xl text-green-100 max-w-3xl mx-auto">
+              Comprehensive residential and commercial cleaning solutions with eco-friendly products 
+              and expert cleaners. Same-day booking and satisfaction guaranteed.
+            </p>
           </div>
-          <p className="text-xl text-green-100 max-w-3xl mx-auto">
-            Comprehensive residential and commercial cleaning solutions with eco-friendly products 
-            and expert cleaners. Same-day booking and satisfaction guaranteed.
-          </p>
-        </div>
-      </section>
-      
-      <CleaningServices />
-      <CleaningWhyChooseUs />
-      <CleaningCTA />
-      <CleaningGuarantee />
-      <CleaningProcess />
-      <CleaningCTA />
-      <CleaningServiceAreas />
-      <CleaningFAQ />
-      <CleaningCTA />
-      <CleaningFooter />
-    </div>
+        </section>
+        
+        <CleaningServices />
+        <CleaningWhyChooseUs />
+        <CleaningCTA />
+        <CleaningGuarantee />
+        <CleaningProcess />
+        <CleaningCTA />
+        <CleaningServiceAreas />
+        <CleaningFAQ />
+        <CleaningCTA />
+        <CleaningFooter />
+      </div>
+    </HelmetProvider>
   );
 };
 
