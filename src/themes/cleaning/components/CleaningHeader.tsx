@@ -1,11 +1,15 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Phone, Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Phone, Menu, X, ChevronDown } from 'lucide-react';
 import { useHeaderData } from '../../../hooks/useHeaderData.js';
+import { httpFile } from "../../../config.js";
 
 const CleaningHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [services, setServices] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const navigate = useNavigate();
   
   const {
     phoneNumber,
@@ -16,13 +20,58 @@ const CleaningHeader = () => {
     isLoading
   } = useHeaderData();
 
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+
+  useEffect(() => {
+    const fetchHeaderData = async () => {
+      try {
+        const formData = new FormData();
+        formData.append('projectId', projectId);
+        
+        const response = await httpFile.post('/webapp/v1/getheader', formData);
+        
+        if (response.data && response.data.services) {
+          setServices(response.data.services);
+        }
+        
+        if (response.data && response.data.locations) {
+          setLocations(response.data.locations);
+        }
+      } catch (error) {
+        console.error("Error fetching header data:", error);
+      }
+    };
+
+    fetchHeaderData();
+  }, [projectId]);
+
   const navigationItems = [
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
-    { name: 'Services', href: '/services' },
-    { name: 'Areas', href: '/areas' },
+    { name: 'Services', href: '/services', hasDropdown: true },
+    { name: 'Areas', href: '/areas', hasDropdown: true },
     { name: 'Contact', href: '/contact' }
   ];
+
+  const handleServiceClick = (service) => {
+    const serviceSlug = service.service_name.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/services/${serviceSlug}`, {
+      state: {
+        serviceId: service._id,
+        serviceName: service.service_name
+      }
+    });
+  };
+
+  const handleAreaClick = (location) => {
+    navigate(`/${location.slug}`, {
+      state: {
+        locationData: location,
+        pageType: location.slugType
+      }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -86,13 +135,75 @@ const CleaningHeader = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200"
-              >
-                {item.name}
-              </Link>
+              <div key={item.name} className="relative group">
+                {item.hasDropdown ? (
+                  <>
+                    <Link
+                      to={item.href}
+                      className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 flex items-center"
+                    >
+                      {item.name}
+                      <ChevronDown size={16} className="ml-1" />
+                    </Link>
+                    
+                    {/* Services Dropdown */}
+                    {item.name === 'Services' && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        {services.map((service) => (
+                          <button
+                            key={service._id}
+                            onClick={() => handleServiceClick(service)}
+                            className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200"
+                          >
+                            <div className="flex items-center">
+                              <i className={`${service.fas_fa_icon} text-green-500 mr-3`}></i>
+                              <span>{service.service_name}</span>
+                            </div>
+                          </button>
+                        ))}
+                        <div className="border-t border-gray-100 mt-2 pt-2">
+                          <Link
+                            to="/services"
+                            className="block w-full text-left px-4 py-3 text-green-600 font-semibold hover:bg-green-50 transition-colors duration-200"
+                          >
+                            View All Services
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Areas Dropdown */}
+                    {item.name === 'Areas' && (
+                      <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        {locations.map((location) => (
+                          <button
+                            key={location.location_id}
+                            onClick={() => handleAreaClick(location)}
+                            className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200"
+                          >
+                            {location.name}
+                          </button>
+                        ))}
+                        <div className="border-t border-gray-100 mt-2 pt-2">
+                          <Link
+                            to="/areas"
+                            className="block w-full text-left px-4 py-3 text-green-600 font-semibold hover:bg-green-50 transition-colors duration-200"
+                          >
+                            View All Areas
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200"
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </div>
             ))}
           </nav>
 
@@ -121,14 +232,54 @@ const CleaningHeader = () => {
           <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col space-y-4">
               {navigationItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 text-left"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
+                <div key={item.name}>
+                  <Link
+                    to={item.href}
+                    className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 text-left block"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                  
+                  {/* Mobile Services */}
+                  {item.name === 'Services' && (
+                    <div className="pl-4 mt-2 space-y-2">
+                      {services.map((service) => (
+                        <button
+                          key={service._id}
+                          onClick={() => {
+                            handleServiceClick(service);
+                            setIsMenuOpen(false);
+                          }}
+                          className="block w-full text-left py-2 text-sm text-gray-600 hover:text-green-600 transition-colors duration-200"
+                        >
+                          <div className="flex items-center">
+                            <i className={`${service.fas_fa_icon} text-green-500 mr-2 text-xs`}></i>
+                            <span>{service.service_name}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Mobile Areas */}
+                  {item.name === 'Areas' && (
+                    <div className="pl-4 mt-2 space-y-2">
+                      {locations.map((location) => (
+                        <button
+                          key={location.location_id}
+                          onClick={() => {
+                            handleAreaClick(location);
+                            setIsMenuOpen(false);
+                          }}
+                          className="block w-full text-left py-2 text-sm text-gray-600 hover:text-green-600 transition-colors duration-200"
+                        >
+                          {location.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
               <a
                 href={`tel:${phoneNumber}`}

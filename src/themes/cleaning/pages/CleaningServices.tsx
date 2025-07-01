@@ -19,19 +19,34 @@ const CleaningServicesPage = () => {
     meta_description: '',
     meta_keywords: ''
   });
+  const [serviceHeroText, setServiceHeroText] = useState('');
+
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
-    const fetchSeoData = async () => {
+    const fetchData = async () => {
       try {
+        // Fetch SEO data
         const seoResponse = await httpFile.get(`/webapp/v1/seo/services`);
         setSeoData(seoResponse.data.data);
+
+        // Fetch hero text from my_site API
+        const { data } = await httpFile.post("/webapp/v1/my_site", {
+          projectId,
+          pageType: "home",
+        });
+
+        if (data.projectInfo && data.projectInfo.serviceHeroText) {
+          setServiceHeroText(data.projectInfo.serviceHeroText);
+        }
       } catch (error) {
-        console.error("Error fetching SEO data:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchSeoData();
-  }, []);
+    fetchData();
+  }, [projectId]);
 
   return (
     <HelmetProvider>
@@ -62,8 +77,7 @@ const CleaningServicesPage = () => {
               <h1 className="text-4xl md:text-5xl font-bold">Professional Cleaning Services</h1>
             </div>
             <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              Comprehensive residential and commercial cleaning solutions with eco-friendly products 
-              and expert cleaners. Same-day booking and satisfaction guaranteed.
+              {serviceHeroText || 'Comprehensive residential and commercial cleaning solutions with eco-friendly products and expert cleaners. Same-day booking and satisfaction guaranteed.'}
             </p>
           </div>
         </section>
