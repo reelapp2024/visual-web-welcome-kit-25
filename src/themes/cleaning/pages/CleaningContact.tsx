@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { useNavigate } from 'react-router-dom';
@@ -39,7 +40,7 @@ const CleaningContact = () => {
           setImage(data.projectInfo.images[3].url)
         }
 
-        // Fetch SEO data
+        // Fetch SEO data for contact page
         const seoResponse = await httpFile.get(`/webapp/v1/seo/contact`);
         setSeoData(seoResponse.data.data);
       } catch (error) {
@@ -53,9 +54,9 @@ const CleaningContact = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title || 'Contact Us - Professional Cleaning Services'}</title>
-        <meta name="description" content={seoData.meta_description || 'Contact us for professional cleaning services. Same-day booking available with free quotes.'} />
-        <meta name="keywords" content={seoData.meta_keywords || 'contact us, cleaning services, free quote, same day booking'} />
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
       
       <div className="min-h-screen font-poppins">

@@ -1,446 +1,203 @@
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { httpFile } from "../../../config.js";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
-import CleaningAboutUs from '../components/CleaningAboutUs';
-import CleaningProcess from '../components/CleaningProcess';
-import CleaningBeforeAfter from '../components/CleaningBeforeAfter';
-import CleaningWhyChooseUs from '../components/CleaningWhyChooseUs';
-import CleaningGuarantee from '../components/CleaningGuarantee';
-import CleaningRelatedServices from '../components/CleaningRelatedServices';
-import CleaningServiceAreas from '../components/CleaningServiceAreas';
 import CleaningFooter from '../components/CleaningFooter';
-import { Sparkles, Phone, CheckCircle } from 'lucide-react';
-import { httpFile } from "../../../config.js";
-import humanizeString from "../../../extras/stringUtils.js";
-import DynamicFAIcon from '../../../extras/DynamicFAIcon.js'; // make sure the path is correct
-import { removeDot } from "../../../extras/removeDot.js";
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Link } from 'react-router-dom';
+import CleaningTestimonials from '../components/CleaningTestimonials';
+import CleaningRelatedServices from '../components/CleaningRelatedServices';
+import { ArrowLeft, CheckCircle, Star, Clock, Shield, Phone, Sparkles } from 'lucide-react';
 
 const CleaningServiceDetail = () => {
-  let { serviceName: urlServiceName } = useParams();
-  const [projectOurProcess, setprojectOurProcess] = useState([]);
-  const [serviceDetails, setServiceDetails] = useState(null);
-  const [serviceImage, setServiceImage] = useState("");
-  const [ProjectBaseImage, setProjectBaseImage] = useState("");
-  const [stepProcess, setStepProcess] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [reloadFlag, setReloadFlag] = useState(0);
-  const [aboutService, setAboutService] = useState('');
-  const [subServices, setSubServices] = useState([]);
+  const { serviceName, locationName } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  const [service, setService] = useState(null);
+  const [relatedServices, setRelatedServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const [seoData, setSeoData] = useState({
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: ''
+  });
+
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
-  const locationName = location.state?.locationName ? `in ${location.state.locationName}` : '';
-  const [serviceId, setServiceId] = useState(location.state?.serviceId || "");
-  let displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
-  const [guarantees, setGuarantees] = useState([]);
-  const [guaranteeText, setGuaranteeText] = useState("");
-  const [promiseLine, setPromiseLine] = useState("");
-  const [projectCategory, setProjectCategory] = useState("");
-  const [projectName, setprojectName] = useState("");
-  const [cta1, setCta1] = useState(null);
-  const [cta2, setCta2] = useState(null);
-  const [cta3, setCta3] = useState(null);
-  const [cta4, setCta4] = useState(null);
-  const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
-
-  const raw = "Contact us for, reliable. and affordable phone repair solutions.";
-  const clean = removeDot(raw);
-
-  displayServiceName = location.state?.locationName ? displayServiceName : removeDot(displayServiceName)
-
-
-  useEffect(() => {
-    localStorage.setItem("locaitonname", locationName);
-  }, [locationName]);
-
-
-  // When URL changes (same page but different param), force refetch
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setServiceId(location.state?.serviceId || "");
-    setReloadFlag(prev => prev + 1);
-  }, [urlServiceName]);
-
-  useEffect(() => {
-    const fetchServiceId = async () => {
-      if (!serviceId && displayServiceName) {
-        try {
-          const { data } = await httpFile.post("/webapp/v1/fetch_service_by_name_and_project", {
-            projectId,
-            serviceName: displayServiceName,
-          });
-
-          if (data?.serviceId) {
-            setServiceId(data.serviceId);
-          }
-        } catch (error) {
-          console.error("Error fetching service ID:", error);
-        }
-      }
-    };
-
-    fetchServiceId();
-  }, [projectId, urlServiceName, serviceId, reloadFlag]);
-
-  useEffect(() => {
-    const fetchServiceData = async () => {
-      if (!serviceId) return;
-
-      try {
-        const { data } = await httpFile.post("/webapp/v1/fetch_service", { serviceId });
-
-        if (data.service) {
-
-
-
-          console.log(data, "Data,cta1")
-          setServiceDetails(data.service);
-          setServiceImage(data.service.images?.[0]?.url || "");
-          setProjectBaseImage(data.service.images?.[2]?.url || "");
-          setStepProcess(data.service.steps_process || []);
-          setAboutService(data.service.about_service || '');
-          setCta1(data.cta1 || null);
-          setCta2(data.cta2 || null);
-          setCta3(data.cta3 || null);
-          setCta4(data.cta4 || null);
-
-          setGuarantees(data.service.ourGuaranteeSection);
-          setGuaranteeText(data.service.ourGuaranteeText);
-          setPromiseLine(data.service.promiseLine)
-          setprojectWhyChooseUs(data.service.whyChooseUsSection);
-
-
-          // Parse subServices from comma-separated string
-          const subServicesArray = Array.isArray(data.service.subServices)
-            ? data.service.subServices.map(item => item.trim()).filter(Boolean) // If it's an array, trim and filter
-            : typeof data.service.subServices === 'string'
-              ? data.service.subServices.split(',').map(item => item.trim()).filter(Boolean) // If it's a string, split, trim, and filter
-              : []; // Default to an empty array if it's neither a string nor an array
-
-          setSubServices(subServicesArray);
-
-
-          setIsLoading(false);
-
-         
-        }
-      } catch (error) {
-        console.error("Error fetching service details:", error);
-      }
-    };
-
-    fetchServiceData();
-  }, [serviceId]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await httpFile.post("/webapp/v1/my_site", {
+        // Fetch service data based on route
+        let serviceId = location.state?.serviceId;
+        const { data } = await httpFile.post("/webapp/v1/fetch_service_by_id", {
           projectId,
-          pageType: "home",
+          serviceId
         });
+        
+        if (data.service) {
+          setService(data.service);
+        } else {
+          setError("Service not found.");
+        }
 
-        if (data.projectInfo) {
-          setprojectOurProcess(data.projectInfo.ourProcessSection);
-          setProjectCategory(data.projectInfo.serviceType);
-          setPhoneNumber(data.aboutUs.phone);
-          setprojectName(data.projectInfo.projectName);
+        // Fetch related services
+        const relatedServicesResponse = await httpFile.post("/webapp/v1/fetch_services", {
+          projectId,
+        });
+        
+        if (relatedServicesResponse.data) {
+          setRelatedServices(relatedServicesResponse.data.services || []);
+        }
+
+        // Fetch SEO data dynamically based on route
+        let seoEndpoint = '';
+        if (locationName && serviceName) {
+          seoEndpoint = `/webapp/v1/seo/${locationName}/services/${serviceName}`;
+        } else if (serviceName) {
+          seoEndpoint = `/webapp/v1/seo/services/${serviceName}`;
+        }
+        
+        if (seoEndpoint) {
+          const seoResponse = await httpFile.get(seoEndpoint);
+          setSeoData(seoResponse.data.data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [projectId]);
-  const hasLocationName = Boolean(location.state?.locationName);
-  const rawDescription = serviceDetails?.service_description || "";
-  // Always clean it first:
-  const cleaned = removeDot(rawDescription);
+  }, [serviceName, locationName, projectId, location.state?.serviceId]);
 
-  const displayServiceDescription = location.state?.locationName
-    // then, if you have a location, tack it on:
-    ? `${cleaned} in ${location.state.locationName}.`
-    : cleaned;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-  const displayServiceImage = serviceImage || '';
-
-
-
+  if (!service) {
+    return <div>No service data found.</div>;
+  }
 
   return (
-    <div className="min-h-screen font-poppins">
-      <CleaningHeader />
+    <HelmetProvider>
+      <Helmet>
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
+      </Helmet>
+      
+      <div className="min-h-screen font-poppins">
+        <CleaningHeader />
 
-      <section className="relative py-20 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden min-h-[600px] flex items-center">
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${ProjectBaseImage})` }}></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-green-600/85 to-emerald-600/85"></div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="flex items-center mb-4">
-                <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-                <h1 className="text-4xl md:text-5xl font-bold">{displayServiceName} {locationName}</h1>
-              </div>
-              <p className="text-xl text-green-100 mb-8">
-                <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-                <span className="text-lg">{displayServiceDescription}</span>
-              </p>
-              <div className="flex items-center space-x-4">
-                <Phone className="w-6 h-6 text-emerald-400" />
-                <span className="text-lg">Call Now: {phoneNumber}</span>
-              </div>
-            </div>
-            <div>
-              <img src={displayServiceImage} alt={displayServiceName} className="rounded-2xl shadow-2xl" />
-            </div>
+        {/* Hero Section */}
+        <section className="relative py-24 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"})` }}>
           </div>
-        </div>
-      </section>
+          <div className="absolute inset-0 bg-gradient-to-br from-green-600/85 to-emerald-600/85"></div>
 
-      {/* ==== NEW "ABOUT" SECTION ==== */}
-      {aboutService && (
-        <section className="py-16 bg-white font-poppins">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-4xl font-bold mb-6">
-              About {displayServiceName}
-            </h2>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              {aboutService}
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <button onClick={() => navigate(-1)} className="absolute top-6 left-6 bg-white/20 hover:bg-white/30 text-white rounded-full p-2">
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <div className="flex items-center justify-center mb-4">
+              <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
+              <h1 className="text-4xl md:text-5xl font-bold">{service.service_name}</h1>
+            </div>
+            <p className="text-xl text-green-100 max-w-3xl mx-auto">
+              {location.state?.serviceDescription || service.service_description}
             </p>
           </div>
         </section>
-      )}
 
-      {/* ==== NEW SUB-SERVICES SECTION ==== */}
-      {subServices.length > 0 && (
-        <section className="py-16 bg-gradient-to-br from-gray-50 to-white font-poppins">
+        {/* Service Details Section */}
+        <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-                Our {displayServiceName} Services Include
-              </h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                We offer comprehensive {displayServiceName.toLowerCase()} services to meet all your needs.
-              </p>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div>
+                <img src={service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"} alt={service.service_name} className="rounded-2xl shadow-xl mb-6" />
+                <img src={service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"} alt={service.service_name} className="rounded-2xl shadow-xl" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Why Choose Our {service.service_name}?</h2>
+                <p className="text-gray-700 leading-relaxed mb-8">
+                  {service.long_description || service.service_description}
+                </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {subServices.map((service, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 group hover:-translate-y-2">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-all duration-300">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors duration-300">
-                        {service}
-                      </h3>
-                    </div>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <p className="text-gray-600">Expert {service.service_name} professionals</p>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <p className="text-gray-600">Eco-friendly cleaning products</p>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-6 h-6 text-green-500 mr-3" />
+                    <p className="text-gray-600">Satisfaction guaranteed</p>
                   </div>
                 </div>
-              ))}
+
+                <div className="mt-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">Customer Reviews</h3>
+                  <div className="flex items-center">
+                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    <Star className="w-5 h-5 text-gray-300 fill-current" />
+                    <span className="text-gray-600 ml-2">4.0/5.0</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
-      )}
 
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white font-poppins">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-              Our Simple Process
-            </h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Our streamlined 4-step process ensures you get professional cleaning service from start to finish.
-            </p>
-          </div>
+        {/* Key Features Section */}
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900">Key Features</h2>
+              <p className="text-gray-600 text-xl">Explore the key features of our {service.service_name}.</p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {stepProcess.length > 0 ? (
-              stepProcess.map((step, index) => (
-                <div key={index} className="text-center relative group">
-                  <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-xl z-10 shadow-xl group-hover:scale-110 transition-all duration-300">
-                    {index + 1}
-                  </div>
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-                    <div className={`bg-gradient-to-br ${step.gradient || 'from-gray-400 to-gray-600'} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}>
-                      <i className={`${step.iconClass || 'fas fa-star'} text-4xl text-green-500`}></i>
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.stepName || 'Step'}</h3>
-                    <p className="text-gray-600 leading-relaxed">{step.serviceDescription || 'No description available.'}</p>
-                  </div>
-                  {index < stepProcess.length - 1 && (
-                    <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-green-300 z-20">
-                      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-gray-600 col-span-4">No process steps available.</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-    {/* CTA! */}
-
-   {cta1 ? (
-  <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 className="text-3xl md:text-4xl font-bold mb-4">
-        {cta1?.title}
-      </h2>
-      <p className="text-xl mb-8 max-w-3xl mx-auto text-green-100">
-        {cta1?.description}
-      </p>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a
-          href={`tel:${phoneNumber}`}
-          className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
-        >
-          <Phone size={24} className="group-hover:animate-pulse" />
-          <span>Call Now: {phoneNumber}</span>
-        </a>
-        <Link
-          to="/contact"
-          className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
-        >
-          <Sparkles size={24} />
-          <span>Book Services of {projectCategory}</span>
-        </Link>
-      </div>
-    </div>
-  </section>
-) : null}  {/* This will render nothing if cta1 is not available */}
-
-
-
-      {/* <CleaningWhyChooseUs /> */}
-
-      <section className="py-20 bg-white font-poppins">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-              Why Choose {projectName}?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              When you choose us, you're choosing quality, reliability, and exceptional service
-              that's backed by years of experience and thousands of satisfied customers.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projectWhyChooseUs.map((feature, index) => (
-              <div key={index} className="text-center group">
-                <div className="bg-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-
-
-                  <div
-                    className={`bg-gradient-to-br ${feature.gradient || 'from-gray-400 to-gray-600'
-                      } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
-                  >
-                    <DynamicFAIcon iconClass={feature.iconClass || ''} />
-                    {/* Changed icon color to green-500 */}
-                  </div>
-
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <Clock className="w-8 h-8 text-green-500 mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Fast & Reliable</h3>
+                <p className="text-gray-600">We provide fast and reliable {service.service_name} to meet your needs.</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Cleaning Gurantee */}
-
-      <section className="py-20 bg-gradient-to-br from-green-50 to-emerald-50 font-poppins">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-              Our {displayServiceName} Guarantee
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {guaranteeText}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {guarantees.map((guarantee, index) => (
-              <div key={index} className="text-center group">
-                <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-                  <div
-                    className={`bg-gradient-to-br ${guarantee.gradient || 'from-gray-400 to-gray-600'
-                      } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
-                  >
-                    <DynamicFAIcon iconClass={guarantee.iconClass || ''} />
-                    {/* Changed icon color to green-500 */}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{guarantee.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{guarantee.description}</p>
-                </div>
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <Shield className="w-8 h-8 text-emerald-500 mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Licensed & Insured</h3>
+                <p className="text-gray-600">Our team is fully licensed and insured for your peace of mind.</p>
               </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <div className="bg-white rounded-xl p-8 shadow-xl max-w-4xl mx-auto border border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Promise to You</h3>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                {promiseLine}
-              </p>
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <Phone className="w-8 h-8 text-green-600 mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">24/7 Support</h3>
+                <p className="text-gray-600">We offer 24/7 support to assist you with any questions or concerns.</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-{/* CTA! */}
+        </section>
 
-       {cta2 ? (
-  <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 className="text-3xl md:text-4xl font-bold mb-4">
-        {cta2?.title}
-      </h2>
-      <p className="text-xl mb-8 max-w-3xl mx-auto text-green-100">
-        {cta2?.description}
-      </p>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a
-          href={`tel:${phoneNumber}`}
-          className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
-        >
-          <Phone size={24} className="group-hover:animate-pulse" />
-          <span>Call Now: {phoneNumber}</span>
-        </a>
-        <Link
-          to="/contact"
-          className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
-        >
-          <Sparkles size={24} />
-          <span>Book Services of {projectCategory}</span>
-        </Link>
+        <CleaningRelatedServices relatedServices={relatedServices} />
+        <CleaningTestimonials />
+        <CleaningCTA />
+        <CleaningFooter />
       </div>
-    </div>
-  </section>
-) : null}  {/* This will render nothing if cta1 is not available */}
-
-      <CleaningRelatedServices />
-      {/* <CleaningServiceAreas /> */}
-      <CleaningFooter />
-    </div>
+    </HelmetProvider>
   );
 };
 

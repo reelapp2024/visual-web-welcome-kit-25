@@ -54,9 +54,9 @@ const CleaningTermsConditions = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title || 'Terms & Conditions - Professional Cleaning Services'}</title>
-        <meta name="description" content={seoData.meta_description || 'Read our terms and conditions for professional cleaning services.'} />
-        <meta name="keywords" content={seoData.meta_keywords || 'terms conditions, cleaning services, legal terms'} />
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
       
       <div className="min-h-screen font-poppins">

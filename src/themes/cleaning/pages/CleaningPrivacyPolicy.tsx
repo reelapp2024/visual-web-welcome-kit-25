@@ -54,9 +54,9 @@ const CleaningPrivacyPolicy = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title || 'Privacy Policy - Professional Cleaning Services'}</title>
-        <meta name="description" content={seoData.meta_description || 'Read our privacy policy for professional cleaning services.'} />
-        <meta name="keywords" content={seoData.meta_keywords || 'privacy policy, cleaning services, data protection'} />
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
       
       <div className="min-h-screen font-poppins">

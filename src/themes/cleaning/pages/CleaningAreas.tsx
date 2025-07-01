@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -31,9 +32,9 @@ const CleaningAreas = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title || 'Service Areas - Professional Cleaning Services'}</title>
-        <meta name="description" content={seoData.meta_description || 'Professional cleaning services throughout the metropolitan area with same-day booking available.'} />
-        <meta name="keywords" content={seoData.meta_keywords || 'service areas, cleaning services, local cleaning, area coverage'} />
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
       
       <div className="min-h-screen font-poppins">

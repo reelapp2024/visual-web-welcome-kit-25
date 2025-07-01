@@ -9,12 +9,14 @@ interface CleaningCountryMapProps {
   locationName?: string;
   lat?: number;
   lng?: number;
+  pageType?: string;
 }
 
 const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
   locationName,
   lat,
-  lng
+  lng,
+  pageType = 'country'
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -24,6 +26,22 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
   if (lat == null || lng == null) {
     return null;
   }
+
+  // Get zoom level based on page type
+  const getZoomLevel = (type: string) => {
+    switch (type) {
+      case 'country':
+        return 5;
+      case 'state':
+        return 7;
+      case 'city':
+        return 10;
+      case 'local_area':
+        return 13;
+      default:
+        return 8;
+    }
+  };
 
   useEffect(() => {
     if (!mapContainer.current || !mapboxgl.accessToken) return;
@@ -38,15 +56,13 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
     const initTimeout = setTimeout(() => {
       if (!mapContainer.current) return;
 
-      
-
       try {
-        // Initialize the map
+        // Initialize the map with dynamic zoom based on page type
         map.current = new mapboxgl.Map({
           container: mapContainer.current,
           style: 'mapbox://styles/mapbox/streets-v11',
           center: [lng, lat],
-          zoom: 8,
+          zoom: getZoomLevel(pageType),
           scrollZoom: true
         });
 
@@ -104,7 +120,7 @@ const CleaningCountryMap: React.FC<CleaningCountryMapProps> = ({
         map.current = null;
       }
     };
-  }, [lat, lng, locationName]);
+  }, [lat, lng, locationName, pageType]);
 
   return (
     <section className="py-20 bg-gray-50 font-poppins">
