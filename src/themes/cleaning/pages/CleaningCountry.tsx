@@ -31,6 +31,7 @@ import CleaningFAQ from '../components/CleaningFAQ';
 import CleaningFooter from '../components/CleaningFooter';
 import { Flag } from 'lucide-react';
 import CleaningLoader from '../components/CleaningLoader';
+import { removeDot } from "../../../extras/removeDot.js";
 
 const CleaningCountry = () => {
   const navigate = useNavigate();
@@ -49,6 +50,11 @@ const CleaningCountry = () => {
   const [projectCategory, setProjectCategory] = useState("");
   const [welcomeLine, setWelcomeLine] = useState("");
   const [showName, setShowName] = useState("");
+  const [countryDescription, setCountryDescription] = useState("");
+  const [stateDescription, setStateDescription] = useState("");
+  const [cityDescription, setCityDescription] = useState("");
+  const [localAreaDescription, setLocalAreaDescription] = useState("");
+
 
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +76,7 @@ const CleaningCountry = () => {
 
   // Get city name from URL for city/local area pages
   let cityName = pathname.split('/').pop();
-  cityName=showName? showName:cityName
+  cityName = showName ? showName : cityName
 
 
 
@@ -92,13 +98,13 @@ const CleaningCountry = () => {
   const getPageDescription = () => {
     switch (pageType) {
       case 'country':
-        return `${projectCategory} services across the ${humanizeString(pageLocation)} with nationwide coverage and local expertise in every state.`;
+        return `${countryDescription} in ${humanizeString(pageLocation)}.`;
       case 'state':
-        return ` ${projectCategory} services in ${humanizeString(cityName)}`;
+        return ` ${stateDescription} in ${(cityName)}`;
       case 'city':
-        return ` ${projectCategory} services in ${humanizeString(cityName)}`;
+        return ` ${cityDescription} in ${(cityName)}`;
       case 'local_area':
-        return `${projectCategory} services in ${humanizeString(cityName)}`;
+        return `${localAreaDescription} in ${(cityName)}`;
       default:
         return `${projectCategory} services.`;
     }
@@ -185,6 +191,15 @@ const CleaningCountry = () => {
           setPageLocation(data.RefLocation || '');
           setShowName(data.showName)
           setIsLoading(false);
+
+          if (data.projectInfo.descriptions) if (data?.projectInfo?.descriptions) {
+
+            console.log((data.projectInfo.descriptions))
+            setCountryDescription(removeDot(data.projectInfo.descriptions[0] || "")); // Country description (index 0)
+            setStateDescription(removeDot(data.projectInfo.descriptions[1] || ""));   // State description (index 1)
+            setCityDescription(removeDot(data.projectInfo.descriptions[2] || ""));    // City description (index 2)
+            setLocalAreaDescription(removeDot(data.projectInfo.descriptions[3] || "")); // Local Area description (index 3)
+          }
 
           if (data.info && data.info.lat && data.info.lng) {
             setLocInfo({
@@ -281,6 +296,8 @@ const CleaningCountry = () => {
   if (isLoading) {
     return <CleaningLoader />;
   }
+
+  console.log(countryDescription,"countryDescriptioncountryDescriptioncountryDescriptioncountryDescription")
 
   const HeroIcon = getHeroIcon();
 
@@ -425,7 +442,7 @@ const CleaningCountry = () => {
       </section>
 
 
-      
+
 
       <CleaningCTA />
       <CleaningWhyChooseUs />

@@ -1,7 +1,10 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { useProcessData } from '../../../hooks/useProcessData.js';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon.js';
+import { useNavigate, useLocation } from "react-router-dom";
+import humanizeString from "../../../extras/stringUtils.js";
 
 const CleaningProcess = () => {
   const {
@@ -9,6 +12,18 @@ const CleaningProcess = () => {
     projectCategory,
     isLoading
   } = useProcessData();
+  const [showName, setShowName] = useState("");
+
+  const location = useLocation();
+const pathname = location.pathname;
+const slug = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+let cityName = pathname.split('/').pop();
+cityName = showName ? showName : cityName;  // Use showName if it's set
+
+cityName = cityName ? `in ${humanizeString(cityName)}` : "";
+
+
+
 
   if (isLoading) {
     return (
@@ -40,7 +55,7 @@ const CleaningProcess = () => {
             Our Simple Process
           </h2>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Our streamlined {projectOurProcess.length}-step process ensures you get professional {projectCategory} service from start to finish.
+            Our streamlined {projectOurProcess.length}-step process ensures you get professional {projectCategory} service from start to finish {cityName}.
           </p>
         </div>
 

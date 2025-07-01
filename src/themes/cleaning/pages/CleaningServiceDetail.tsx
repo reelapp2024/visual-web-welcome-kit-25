@@ -15,8 +15,9 @@ import { Sparkles, Phone, CheckCircle } from 'lucide-react';
 import { httpFile } from "../../../config.js";
 import humanizeString from "../../../extras/stringUtils.js";
 import DynamicFAIcon from '../../../extras/DynamicFAIcon.js'; // make sure the path is correct
-
+import { removeDot } from "../../../extras/removeDot.js";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Link } from 'react-router-dom';
 
 const CleaningServiceDetail = () => {
   let { serviceName: urlServiceName } = useParams();
@@ -36,18 +37,28 @@ const CleaningServiceDetail = () => {
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
   const locationName = location.state?.locationName ? `in ${location.state.locationName}` : '';
   const [serviceId, setServiceId] = useState(location.state?.serviceId || "");
-  const displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
+  let displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
   const [guarantees, setGuarantees] = useState([]);
   const [guaranteeText, setGuaranteeText] = useState("");
   const [promiseLine, setPromiseLine] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
-    const [projectName, setprojectName] = useState("");
-    const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
+  const [projectName, setprojectName] = useState("");
+  const [cta1, setCta1] = useState(null);
+  const [cta2, setCta2] = useState(null);
+  const [cta3, setCta3] = useState(null);
+  const [cta4, setCta4] = useState(null);
+  const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
+
+  const raw = "Contact us for, reliable. and affordable phone repair solutions.";
+  const clean = removeDot(raw);
+
+  displayServiceName = location.state?.locationName ? displayServiceName : removeDot(displayServiceName)
+
+
   useEffect(() => {
     localStorage.setItem("locaitonname", locationName);
   }, [locationName]);
 
-  console.log(locationName, "Location name!!!!")
 
   // When URL changes (same page but different param), force refetch
   useEffect(() => {
@@ -86,18 +97,24 @@ const CleaningServiceDetail = () => {
 
         if (data.service) {
 
-          console.log(data.service, "Data,service")
+
+
+          console.log(data, "Data,cta1")
           setServiceDetails(data.service);
           setServiceImage(data.service.images?.[0]?.url || "");
           setProjectBaseImage(data.service.images?.[2]?.url || "");
           setStepProcess(data.service.steps_process || []);
           setAboutService(data.service.about_service || '');
+          setCta1(data.cta1 || null);
+          setCta2(data.cta2 || null);
+          setCta3(data.cta3 || null);
+          setCta4(data.cta4 || null);
 
           setGuarantees(data.service.ourGuaranteeSection);
           setGuaranteeText(data.service.ourGuaranteeText);
           setPromiseLine(data.service.promiseLine)
           setprojectWhyChooseUs(data.service.whyChooseUsSection);
- 
+
 
           // Parse subServices from comma-separated string
           const subServicesArray = Array.isArray(data.service.subServices)
@@ -111,7 +128,7 @@ const CleaningServiceDetail = () => {
 
           setIsLoading(false);
 
-          console.log(data.service, "data service!!!!")
+         
         }
       } catch (error) {
         console.error("Error fetching service details:", error);
@@ -131,9 +148,9 @@ const CleaningServiceDetail = () => {
 
         if (data.projectInfo) {
           setprojectOurProcess(data.projectInfo.ourProcessSection);
-                   setProjectCategory(data.projectInfo.serviceType);
+          setProjectCategory(data.projectInfo.serviceType);
           setPhoneNumber(data.aboutUs.phone);
-               setprojectName(data.projectInfo.projectName);
+          setprojectName(data.projectInfo.projectName);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -142,9 +159,21 @@ const CleaningServiceDetail = () => {
 
     fetchData();
   }, [projectId]);
+  const hasLocationName = Boolean(location.state?.locationName);
+  const rawDescription = serviceDetails?.service_description || "";
+  // Always clean it first:
+  const cleaned = removeDot(rawDescription);
 
-  const displayServiceDescription = serviceDetails?.service_description || 'Professional home cleaning services...';
+  const displayServiceDescription = location.state?.locationName
+    // then, if you have a location, tack it on:
+    ? `${cleaned} in ${location.state.locationName}.`
+    : cleaned;
+
+
   const displayServiceImage = serviceImage || '';
+
+
+
 
   return (
     <div className="min-h-screen font-poppins">
@@ -163,7 +192,7 @@ const CleaningServiceDetail = () => {
               </div>
               <p className="text-xl text-green-100 mb-8">
                 <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-                <span className="text-lg">{displayServiceDescription} {locationName}</span>
+                <span className="text-lg">{displayServiceDescription}</span>
               </p>
               <div className="flex items-center space-x-4">
                 <Phone className="w-6 h-6 text-emerald-400" />
@@ -265,43 +294,75 @@ const CleaningServiceDetail = () => {
         </div>
       </section>
 
-      <CleaningCTA />
+    {/* CTA! */}
+
+   {cta1 ? (
+  <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        {cta1?.title}
+      </h2>
+      <p className="text-xl mb-8 max-w-3xl mx-auto text-green-100">
+        {cta1?.description}
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a
+          href={`tel:${phoneNumber}`}
+          className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+        >
+          <Phone size={24} className="group-hover:animate-pulse" />
+          <span>Call Now: {phoneNumber}</span>
+        </a>
+        <Link
+          to="/contact"
+          className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+        >
+          <Sparkles size={24} />
+          <span>Book Services of {projectCategory}</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+) : null}  {/* This will render nothing if cta1 is not available */}
+
+
+
       {/* <CleaningWhyChooseUs /> */}
 
-         <section className="py-20 bg-white font-poppins">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-            Why Choose {projectName}?
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            When you choose us, you're choosing quality, reliability, and exceptional service
-            that's backed by years of experience and thousands of satisfied customers.
-          </p>
-        </div>
+      <section className="py-20 bg-white font-poppins">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
+              Why Choose {projectName}?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              When you choose us, you're choosing quality, reliability, and exceptional service
+              that's backed by years of experience and thousands of satisfied customers.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projectWhyChooseUs.map((feature, index) => (
-            <div key={index} className="text-center group">
-              <div className="bg-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projectWhyChooseUs.map((feature, index) => (
+              <div key={index} className="text-center group">
+                <div className="bg-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
 
 
-                <div
-                  className={`bg-gradient-to-br ${feature.gradient || 'from-gray-400 to-gray-600'
-                    } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
-                >
+                  <div
+                    className={`bg-gradient-to-br ${feature.gradient || 'from-gray-400 to-gray-600'
+                      } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
+                  >
                     <DynamicFAIcon iconClass={feature.iconClass || ''} />
-                  {/* Changed icon color to green-500 */}
-                </div>
+                    {/* Changed icon color to green-500 */}
+                  </div>
 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
 
       {/* Cleaning Gurantee */}
@@ -345,7 +406,37 @@ const CleaningServiceDetail = () => {
           </div>
         </div>
       </section>
-      <CleaningCTA />
+{/* CTA! */}
+
+       {cta2 ? (
+  <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        {cta2?.title}
+      </h2>
+      <p className="text-xl mb-8 max-w-3xl mx-auto text-green-100">
+        {cta2?.description}
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a
+          href={`tel:${phoneNumber}`}
+          className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+        >
+          <Phone size={24} className="group-hover:animate-pulse" />
+          <span>Call Now: {phoneNumber}</span>
+        </a>
+        <Link
+          to="/contact"
+          className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+        >
+          <Sparkles size={24} />
+          <span>Book Services of {projectCategory}</span>
+        </Link>
+      </div>
+    </div>
+  </section>
+) : null}  {/* This will render nothing if cta1 is not available */}
+
       <CleaningRelatedServices />
       {/* <CleaningServiceAreas /> */}
       <CleaningFooter />

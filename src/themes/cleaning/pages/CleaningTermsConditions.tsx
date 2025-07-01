@@ -4,11 +4,16 @@ import DOMPurify from 'dompurify';  // install with npm/yarn if needed
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningFooter from '../components/CleaningFooter';
 import { CheckCircle, FileText } from 'lucide-react';
-
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 const CleaningTermsConditions = () => {
   const [termsContent, setTermsContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [seoData, setSeoData] = useState({
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: ''
+  });
 
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
@@ -32,6 +37,10 @@ const CleaningTermsConditions = () => {
         } else {
           setTermsContent("<p>No terms and conditions available.</p>");
         }
+
+
+        const seoResponse = await httpFile.get(`/webapp/v1/seo/terms-conditions`);
+        setSeoData(seoResponse.data.data);
       } catch (err) {
         setError("Failed to load terms and conditions.");
         console.error(err);
@@ -43,14 +52,18 @@ const CleaningTermsConditions = () => {
     fetchData();
   }, [projectId]);
 
-  console.log("Raw HTML content:", termsContent);
+
+
+  console.log("Raw seoData content:", seoData);
 
 
   return (
     <div className="min-h-screen font-poppins">
+
+    
       <CleaningHeader />
 
- <style dangerouslySetInnerHTML={{__html: "\n        h1 {\n  font-size: 2rem;\n  font-weight: bold;\n  margin-bottom: 1rem;\n}\n\nh2 {\n  font-size: 1.5rem;\n  font-weight: semi-bold;\n  margin-top: 1.5rem;\n  margin-bottom: 0.75rem;\n}\n\np {\n  margin-bottom: 1rem;\n  line-height: 1.6;\n}\n\n      " }} />
+      <style dangerouslySetInnerHTML={{ __html: "\n        h1 {\n  font-size: 2rem;\n  font-weight: bold;\n  margin-bottom: 1rem;\n}\n\nh2 {\n  font-size: 1.5rem;\n  font-weight: semi-bold;\n  margin-top: 1.5rem;\n  margin-bottom: 0.75rem;\n}\n\np {\n  margin-bottom: 1rem;\n  line-height: 1.6;\n}\n\n      " }} />
 
 
       <div className="bg-gradient-to-br from-green-50 to-emerald-50 py-16">
