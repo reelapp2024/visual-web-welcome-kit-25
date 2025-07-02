@@ -1,14 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Phone, Menu, X, ChevronDown } from 'lucide-react';
 import { useHeaderData } from '../../../hooks/useHeaderData.js';
-import { httpFile } from "../../../config.js";
 
 const CleaningHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [services, setServices] = useState([]);
-  const [locations, setLocations] = useState([]);
   const navigate = useNavigate();
   
   const {
@@ -17,34 +14,10 @@ const CleaningHeader = () => {
     projectCategory,
     projectFasFA,
     projectSlogan,
+    services,
+    locations,
     isLoading
   } = useHeaderData();
-
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
-
-  useEffect(() => {
-    const fetchHeaderData = async () => {
-      try {
-        const formData = new FormData();
-        formData.append('projectId', projectId);
-        
-        const response = await httpFile.post('/webapp/v1/getheader', formData);
-        
-        if (response.data && response.data.services) {
-          setServices(response.data.services);
-        }
-        
-        if (response.data && response.data.locations) {
-          setLocations(response.data.locations);
-        }
-      } catch (error) {
-        console.error("Error fetching header data:", error);
-      }
-    };
-
-    fetchHeaderData();
-  }, [projectId]);
 
   const navigationItems = [
     { name: 'Home', href: '/' },
@@ -147,7 +120,7 @@ const CleaningHeader = () => {
                     </Link>
                     
                     {/* Services Dropdown */}
-                    {item.name === 'Services' && (
+                    {item.name === 'Services' && services.length > 0 && (
                       <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                         {services.map((service) => (
                           <button
@@ -173,7 +146,7 @@ const CleaningHeader = () => {
                     )}
 
                     {/* Areas Dropdown */}
-                    {item.name === 'Areas' && (
+                    {item.name === 'Areas' && locations.length > 0 && (
                       <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                         {locations.map((location) => (
                           <button
@@ -242,7 +215,7 @@ const CleaningHeader = () => {
                   </Link>
                   
                   {/* Mobile Services */}
-                  {item.name === 'Services' && (
+                  {item.name === 'Services' && services.length > 0 && (
                     <div className="pl-4 mt-2 space-y-2">
                       {services.map((service) => (
                         <button
@@ -263,7 +236,7 @@ const CleaningHeader = () => {
                   )}
 
                   {/* Mobile Areas */}
-                  {item.name === 'Areas' && (
+                  {item.name === 'Areas' && locations.length > 0 && (
                     <div className="pl-4 mt-2 space-y-2">
                       {locations.map((location) => (
                         <button
