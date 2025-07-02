@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 
 import { useProcessData } from '../../../hooks/useProcessData.js';
 import DynamicFAIcon from '../../../extras/DynamicFAIcon.js';

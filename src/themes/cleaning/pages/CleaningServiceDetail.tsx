@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';

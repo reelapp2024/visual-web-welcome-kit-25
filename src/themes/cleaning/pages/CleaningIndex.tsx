@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Link } from 'react-router-dom';
 import { Phone, Sparkles } from 'lucide-react';
