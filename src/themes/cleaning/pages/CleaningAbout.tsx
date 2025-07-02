@@ -1,5 +1,5 @@
 
-import  { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningAboutUs from '../components/CleaningAboutUs';
@@ -20,8 +20,6 @@ const CleaningAbout = () => {
     meta_keywords: ''
   });
   const [aboutHeroText, setAboutHeroText] = useState('');
-  const [projectCategory, setProjectCategory] = useState("");
-
 
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
@@ -41,8 +39,6 @@ const CleaningAbout = () => {
 
         if (data.projectInfo && data.projectInfo.aboutHeroText) {
           setAboutHeroText(data.projectInfo.aboutHeroText);
-          setProjectCategory(data.projectInfo.serviceType);
-
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -68,7 +64,7 @@ const CleaningAbout = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ 
-              // backgroundImage: 'url(https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=2126&q=80)',
+              backgroundImage: 'url(https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=2126&q=80)',
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
@@ -78,10 +74,10 @@ const CleaningAbout = () => {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
             <div className="flex items-center justify-center mb-4">
               <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-              <h1 className="text-4xl md:text-5xl font-bold">About {projectCategory}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold">About Our Cleaning Services</h1>
             </div>
             <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              {aboutHeroText }
+              {aboutHeroText || 'Learn more about our professional cleaning services and commitment to excellence.'}
             </p>
           </div>
         </section>

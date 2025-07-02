@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
@@ -20,7 +20,6 @@ const CleaningServicesPage = () => {
     meta_keywords: ''
   });
   const [serviceHeroText, setServiceHeroText] = useState('');
-  const [projectName, setProjectName] = useState("");
 
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
@@ -40,8 +39,6 @@ const CleaningServicesPage = () => {
 
         if (data.projectInfo && data.projectInfo.serviceHeroText) {
           setServiceHeroText(data.projectInfo.serviceHeroText);
-          setProjectName(data.projectInfo.projectName);
-
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,7 +74,7 @@ const CleaningServicesPage = () => {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
             <div className="flex items-center justify-center mb-4">
               <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-              <h1 className="text-4xl md:text-5xl font-bold">{projectName} services</h1>
+              <h1 className="text-4xl md:text-5xl font-bold">Professional Cleaning Services</h1>
             </div>
             <p className="text-xl text-green-100 max-w-3xl mx-auto">
               {serviceHeroText || 'Comprehensive residential and commercial cleaning solutions with eco-friendly products and expert cleaners. Same-day booking and satisfaction guaranteed.'}

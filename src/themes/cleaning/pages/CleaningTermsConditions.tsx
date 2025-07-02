@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { httpFile } from "../../../config.js";
 import DOMPurify from 'dompurify';  // install with npm/yarn if needed
 import CleaningHeader from '../components/CleaningHeader';

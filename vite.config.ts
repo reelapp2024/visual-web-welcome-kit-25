@@ -1,4 +1,4 @@
-// vite.config.js
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,10 +19,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-        target: 'es2015',  // Ensure compatibility for older JavaScript engines
-
-    outDir: "build", // Explicitly set to 'dist' (Vite's default)
-    // outDir: "dist", // Explicitly set to 'dist' (Vite's default)
-    sourcemap: mode === "development", // Optional: sourcemaps for dev
+    outDir: "dist", // Explicitly confirm output directory
   },
 }));
