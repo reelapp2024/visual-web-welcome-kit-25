@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
@@ -11,7 +10,6 @@ import CleaningTestimonials from '../components/CleaningTestimonials';
 import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
 import { httpFile } from "../../../config.js";
-import { slugify } from "../../../extras/slug";
 
 const CleaningAbout = () => {
   const [seoData, setSeoData] = useState({
@@ -21,8 +19,8 @@ const CleaningAbout = () => {
   });
   const [aboutHeroText, setAboutHeroText] = useState('');
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+  // Get project ID from environment variable only
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Link } from 'react-router-dom';
@@ -26,16 +25,28 @@ const CleaningIndex = () => {
     meta_keywords: ''
   });
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+  // Get project ID from environment variable only
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
-  console.log(projectId ,"<<<<ProjectId")
+  console.log(projectId, "<<<<ProjectId from ENV")
 
   useEffect(() => {
+    // Check for siteId in URL parameters on home page
+    const urlParams = new URLSearchParams(window.location.search);
+    const siteId = urlParams.get('siteId');
+    
+    if (siteId) {
+      // Update the environment variable
+      import.meta.env.VITE_PROJECT_ID = siteId;
+      console.log('Updated project ID from URL:', siteId);
+    }
+
     const fetchData = async () => {
       try {
+        const currentProjectId = siteId || projectId;
+        
         const { data } = await httpFile.post("/webapp/v1/my_site", {
-          projectId,
+          projectId: currentProjectId,
           pageType: "home",
           reqFrom:"home"
         });
@@ -98,7 +109,7 @@ const CleaningIndex = () => {
               </a>
               <Link
                 to="/contact"
-                className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+                className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
               >
                 <Sparkles size={24} />
                 <span>Book Services of {projectCategory}</span>
