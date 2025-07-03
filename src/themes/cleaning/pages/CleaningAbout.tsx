@@ -9,6 +9,8 @@ import CleaningCTA from '../components/CleaningCTA';
 import CleaningProcess from '../components/CleaningProcess';
 import CleaningGuarantee from '../components/CleaningGuarantee';
 import CleaningTestimonials from '../components/CleaningTestimonials';
+import CleaningMissionVision from '../components/CleaningMissionVision';
+import CleaningValues from '../components/CleaningValues';
 import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
 import { httpFile } from "../../../config.js";
@@ -75,8 +77,11 @@ const CleaningAbout = () => {
         </section>
 
         <CleaningAboutUs />
-        {/* <CleaningWhyChooseUs /> */}
+        <CleaningMissionVision />
         <CleaningCTA />
+        <CleaningWhyChooseUs />
+        <CleaningCTA />
+        <CleaningValues />
         <CleaningProcess />
         <CleaningGuarantee />
         <CleaningTestimonials />
