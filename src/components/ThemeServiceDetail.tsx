@@ -1,38 +1,43 @@
 
 import React from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { currentTheme } from '../App';
+import SEOHelmet from './SEOHelmet';
 
-// Cleaning Theme
+// Import theme components
 import CleaningServiceDetail from '../themes/cleaning/pages/CleaningServiceDetail';
-
-// Plumbing Theme
 import PlumbingServiceDetail from '../themes/plumbing/pages/PlumbingServiceDetail';
-
-// Roofing Theme
 import RoofingServiceDetail from '../themes/roofing/pages/RoofingServiceDetail';
-
-// HVAC Theme
 import HVACServiceDetail from '../themes/hvac/pages/HVACServiceDetail';
-
-// Painting Theme
 import PaintingServiceDetail from '../themes/painting/pages/PaintingServiceDetail';
 
 const ThemeServiceDetail = () => {
-  switch (currentTheme) {
-    case 'cleaning':
-      return <CleaningServiceDetail />;
-    case 'plumbing':
-      return <PlumbingServiceDetail />;
-    case 'roofing':
-      return <RoofingServiceDetail />;
-    case 'hvac':
-      return <HVACServiceDetail />;
-    case 'painting':
-      return <PaintingServiceDetail />;
-    default:
-      return <CleaningServiceDetail />;
-  }
+  const location = useLocation();
+  const serviceDetailUrl = location.pathname;
+
+  const getThemeComponent = () => {
+    switch (currentTheme) {
+      case 'cleaning':
+        return <CleaningServiceDetail />;
+      case 'plumbing':
+        return <PlumbingServiceDetail />;
+      case 'roofing':
+        return <RoofingServiceDetail />;
+      case 'hvac':
+        return <HVACServiceDetail />;
+      case 'painting':
+        return <PaintingServiceDetail />;
+      default:
+        return <CleaningServiceDetail />;
+    }
+  };
+
+  return (
+    <>
+      <SEOHelmet pageUrl={serviceDetailUrl} />
+      {getThemeComponent()}
+    </>
+  );
 };
 
 export default ThemeServiceDetail;

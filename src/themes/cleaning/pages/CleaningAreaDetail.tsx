@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { httpFile } from "../../../config.js";
@@ -38,9 +37,9 @@ const CleaningAreaDetail = () => {
   const [projectLocations, setProjectLocations] = useState([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [projectFaqs, setprojectFaqs] = useState([]);
-  const currentLocation = location.pathname;
-  const RefLocation = currentLocation.slice(1);
-  const cityName = currentLocation.split('/').pop();
+  const currentLocationPath = location.pathname;
+  const RefLocation = currentLocationPath.slice(1);
+  const cityName = currentLocationPath.split('/').pop();
   console.log('Text after last slash:', cityName);
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
   const [projectCategory, setProjectCategory] = useState("");
@@ -50,7 +49,7 @@ const CleaningAreaDetail = () => {
   const projectId = useProjectId();
   
   // Create dynamic SEO URL for this area
-  const seoPageUrl = currentLocation;
+  const seoPageUrl = currentLocationPath;
   const [locations, setLocations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
