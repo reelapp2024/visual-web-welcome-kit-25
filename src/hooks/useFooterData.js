@@ -13,7 +13,7 @@ export const useFooterData = () => {
       return import.meta.env.VITE_PROJECT_ID;
     }
     const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "6858eacc9ed4273493231137";
+    return savedSiteId || "686520a55dab9a87f6bfdf6a";
   };
 
   useEffect(() => {

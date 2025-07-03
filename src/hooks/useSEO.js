@@ -15,7 +15,7 @@ export const useSEO = (pageUrl) => {
       try {
         setLoading(true);
         const savedSiteId = localStorage.getItem("currentSiteId");
-        const projectId = savedSiteId || import.meta.env.VITE_PROJECT_ID || "685e9579244805bf82af09da";
+        const projectId = savedSiteId || import.meta.env.VITE_PROJECT_ID ;
         
         const formData = new FormData();
         formData.append('projectId', projectId);
@@ -28,6 +28,7 @@ export const useSEO = (pageUrl) => {
         });
 
         if (response.data && response.data.data) {
+          console.log(response.data.data,"<<<<<<<<<<<<<<<<<<this is seo data ")
           setSeoData(response.data.data);
         }
       } catch (error) {

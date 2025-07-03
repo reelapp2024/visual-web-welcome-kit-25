@@ -13,7 +13,7 @@ const CleaningFAQ = () => {
       return import.meta.env.VITE_PROJECT_ID;
     }
     const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "685554e6ce43a5111d80438e";
+    return savedSiteId || "686520a55dab9a87f6bfdf6a";
   };
 
   const projectId = getProjectId();

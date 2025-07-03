@@ -19,7 +19,7 @@ export const useProcessData = (params = {}) => {
     if (memoizedParams.projectId) return memoizedParams.projectId;
     if (import.meta.env.VITE_PROJECT_ID) return import.meta.env.VITE_PROJECT_ID;
     const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "685cffa53ee7098086538c06";
+    return savedSiteId || "686520a55dab9a87f6bfdf6a";
   }, [memoizedParams.projectId]);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
