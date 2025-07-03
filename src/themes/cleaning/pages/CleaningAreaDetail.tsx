@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { httpFile } from "../../../config.js";
@@ -20,13 +21,13 @@ import CleaningFooter from '../components/CleaningFooter';
 import { MapPin, Clock, Shield } from 'lucide-react';
 import { Star, StarHalf, Quote } from "lucide-react";
 import { ChevronDown, ChevronUp } from 'lucide-react';
+
 interface Testimonial {
   review_text: string;
   customer_image: string;
   customer_name: string;
   rating: number | string; // could be 4.5, "3.5", etc.
 }
-
 
 import { slugify } from "../../../extras/slug";
 
@@ -46,19 +47,7 @@ const CleaningAreaDetail = () => {
   const [pageLocation, setPageLocation] = useState("");
   const [welcomeLine, setWelcomeLine] = useState("");
 
-  // Project ID hierarchy: env > localStorage > hardcoded
-  const getProjectId = () => {
-    if (import.meta.env.VITE_PROJECT_ID) {
-      return import.meta.env.VITE_PROJECT_ID;
-    }
-    const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "685554e6ce43a5111d80438e";
-  };
-
   const projectId = useProjectId();
-  const currentLocation = location.pathname;
-  const RefLocation = currentLocation.slice(1);
-  const cityName = currentLocation.split('/').pop();
   
   // Create dynamic SEO URL for this area
   const seoPageUrl = currentLocation;
@@ -114,7 +103,6 @@ const CleaningAreaDetail = () => {
         serviceName: service.service_name,
         serviceDescription: service.service_description,
         locationName: `${humanizeString(cityName)}`,
-
         serviceImage: service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
         serviceImage1: service.images[1]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
         serviceImage2: service.images[2]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"

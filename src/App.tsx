@@ -16,8 +16,8 @@ import ThemeCountry from './components/ThemeCountry';
 import ThemeState from './components/ThemeState';
 import ThemeCity from './components/ThemeCity';
 
-// Define the current theme
-export const currentTheme = 'cleaning';
+// Define the current theme with proper typing
+export const currentTheme: 'cleaning' | 'plumbing' | 'roofing' | 'hvac' | 'painting' = 'cleaning';
 
 function App() {
   return (
