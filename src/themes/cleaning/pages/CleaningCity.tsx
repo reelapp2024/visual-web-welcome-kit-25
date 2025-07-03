@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { httpFile } from "../../../config.js";
@@ -13,7 +11,6 @@ interface Testimonial {
   customer_name: string;
   rating: number | string; // could be 4.5, "3.5", etc.
 }
-
 
 import { slugify } from "../../../extras/slug";
 import humanizeString from "../../../extras/stringUtils.js";
@@ -34,14 +31,6 @@ import { Building } from 'lucide-react';
 import CleaningLoader from '../components/CleaningLoader';
 
 const CleaningCity = () => {
-
-
-
-
-
-
-
-
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -58,54 +47,35 @@ const CleaningCity = () => {
 
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
 
-
   const [projectCategory, setProjectCategory] = useState("");
   const [pageLocation, setPageLocation] = useState("");
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  let projectId = savedSiteId || "685cffa53ee7098086538c06";
+  let projectId = import.meta.env.VITE_PROJECT_ID;
   const [locations, setLocations] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
-  let { id,
-
-    UpcomingPage,
-    nextPage,
-    locationName,
-
-    _id } = location.state || {};
+  let { id, UpcomingPage, nextPage, locationName, _id } = location.state || {};
 
   const handleLocationClick = (locationName, id, _id) => {
-
-
-
-
-
     let nextPage = ''
 
     if (UpcomingPage == 'country') {
-
       nextPage = 'States'
     }
     else if (UpcomingPage == 'state') {
-
       nextPage = 'Cities'
     }
 
     if (UpcomingPage == 'city') {
-
       nextPage = 'Local Areas'
     }
 
     if (UpcomingPage == 'local') {
-
       nextPage = 'whole areas'
     }
 
     let locationToNavigate = `/${RefLocation}/${slugify(locationName)}`
-
-
 
     navigate(locationToNavigate, {
       state: {
@@ -119,9 +89,7 @@ const CleaningCity = () => {
       }
     });
 
-
     // log the startFrom value
-
   };
 
   useEffect(() => {
@@ -134,8 +102,6 @@ const CleaningCity = () => {
           _id: _id,
           RefLocation: RefLocation,
           reqFrom:"cleaningCity"
-
-
         });
 
         console.log(data)
@@ -151,8 +117,6 @@ const CleaningCity = () => {
 
           setPageLocation(data.RefLocation)
       setIsLoading(false);
-
-
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -161,7 +125,6 @@ const CleaningCity = () => {
 
     fetchData();
   }, [projectId]);
-
 
   const getFirstSentence = (text: string) => {
     if (!text) return '';
@@ -202,13 +165,8 @@ const CleaningCity = () => {
   
       fetchData();
     }, [projectId]);
-  
-  
-  
-  
 
   console.log(pageLocation, "pageLocation")
-
 
     if (isLoading) {
       return <CleaningLoader />;

@@ -7,16 +7,7 @@ const CleaningFAQ = () => {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [projectFaqs, setprojectFaqs] = useState([]);
 
-  // Project ID hierarchy: env > localStorage > hardcoded
-  const getProjectId = () => {
-    if (import.meta.env.VITE_PROJECT_ID) {
-      return import.meta.env.VITE_PROJECT_ID;
-    }
-    const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "686520a55dab9a87f6bfdf6a";
-  };
-
-  const projectId = getProjectId();
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     const fetchData = async () => {

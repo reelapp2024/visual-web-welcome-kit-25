@@ -26,7 +26,6 @@ interface Testimonial {
   rating: number | string; // could be 4.5, "3.5", etc.
 }
 
-
 import { slugify } from "../../../extras/slug";
 import humanizeString from "../../../extras/stringUtils.js";
 
@@ -47,16 +46,7 @@ const CleaningAreaDetail = () => {
   const [pageLocation, setPageLocation] = useState("");
   const [welcomeLine, setWelcomeLine] = useState("");
 
-  // Project ID hierarchy: env > localStorage > hardcoded
-  const getProjectId = () => {
-    if (import.meta.env.VITE_PROJECT_ID) {
-      return import.meta.env.VITE_PROJECT_ID;
-    }
-    const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "686520a55dab9a87f6bfdf6a";
-  };
-
-  const projectId = getProjectId();
+  const projectId = import.meta.env.VITE_PROJECT_ID;
   const [locations, setLocations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

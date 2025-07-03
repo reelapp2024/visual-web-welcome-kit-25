@@ -11,13 +11,10 @@ export const useMySiteData = (params = {}) => {
   // Memoize params to prevent unnecessary re-renders
   const memoizedParams = useMemo(() => params, [JSON.stringify(params)]);
 
-  // Get project ID from params, localStorage, or env
+  // Get project ID from env only
   const getProjectId = useCallback(() => {
-    if (memoizedParams.projectId) return memoizedParams.projectId;
-    if (import.meta.env.VITE_PROJECT_ID) return import.meta.env.VITE_PROJECT_ID;
-    const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "686520a55dab9a87f6bfdf6a";
-  }, [memoizedParams.projectId]);
+    return import.meta.env.VITE_PROJECT_ID;
+  }, []);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
     try {

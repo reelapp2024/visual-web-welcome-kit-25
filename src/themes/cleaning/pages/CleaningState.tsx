@@ -13,7 +13,6 @@ interface Testimonial {
   rating: number | string; // could be 4.5, "3.5", etc.
 }
 
-
 import { slugify } from "../../../extras/slug";
 import humanizeString from "../../../extras/stringUtils.js";
 import CleaningHeader from '../components/CleaningHeader';
@@ -59,62 +58,40 @@ const Country = humanizeString(parts[parts.length - 2]);  // like country
 console.log('Last segment (state):', State);
 console.log('Second last segment (country):', Country);
 
-
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
 
   const [projectCategory, setProjectCategory] = useState("");
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  let projectId = savedSiteId || "685cffa53ee7098086538c06";
+  let projectId = import.meta.env.VITE_PROJECT_ID;
 
-
-  let { id,
-
-    UpcomingPage,
-    nextPage,
-    locationName,
-    PrevLocation,
-
-    _id } = location.state || {};
-
+  let { id, UpcomingPage, nextPage, locationName, PrevLocation, _id } = location.state || {};
 
     if(!PrevLocation){
       PrevLocation=humanizeString(stateName)
     }
     console.log(location.state, "location.state")
 
-
   const handleLocationClick = (locationName, id, _id,slug) => {
-
-
-
-
-
     let nextPage = ''
 
     if (UpcomingPage == 'country') {
-
       nextPage = 'States'
     }
     else if (UpcomingPage == 'state') {
-
       nextPage = 'Cities'
     }
 
     if (UpcomingPage == 'city') {
-
       nextPage = 'Local Areas'
     }
 
     if (UpcomingPage == 'local') {
-
       nextPage = 'whole areas'
     }
 
     let locationToNavigate = `/${RefLocation}/${slugify(locationName)}`
-
 
     navigate(locationToNavigate, {
       state: {
@@ -128,9 +105,7 @@ console.log('Second last segment (country):', Country);
       }
     });
 
-
     // log the startFrom value
-
   };
 
   useEffect(() => {
@@ -143,14 +118,11 @@ console.log('Second last segment (country):', Country);
           _id: _id,
           RefLocation: RefLocation,
           reqFrom:"cleaningState"
-
-
         });
 
         if (data.projectInfo && data.projectInfo.serviceType) {
           setProjectCategory(data.projectInfo.serviceType);
           setProjectLocations(data.locations);
-
 
           setProjectReviews(data.testimonials || []);
           setprojectFaqs(data.faq || []);
@@ -170,8 +142,6 @@ console.log('Second last segment (country):', Country);
 
           setPageLocation(data.RefLocation)
       setIsLoading(false);
-
-
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -180,7 +150,6 @@ console.log('Second last segment (country):', Country);
 
     fetchData();
   }, [projectId]);
-
 
    const handleServiceClick = (service: any) => {
       const serviceName = service.service_name.toLowerCase().replace(/\s+/g, '-');
@@ -220,25 +189,12 @@ console.log('Second last segment (country):', Country);
   
       fetchData();
     }, [projectId]);
-  
-  
-  
-  
-
-
-
 
   console.log(pageLocation, "pageLocation")
-
-
-
-
 
     if (isLoading) {
       return <CleaningLoader />;
     }
-
-
 
   return (
     <div className="min-h-screen font-poppins">

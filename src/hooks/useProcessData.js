@@ -14,13 +14,10 @@ export const useProcessData = (params = {}) => {
   // Memoize params to prevent unnecessary re-renders
   const memoizedParams = useMemo(() => params, [JSON.stringify(params)]);
 
-  // Get project ID from params, localStorage, or env
+  // Get project ID from env only
   const getProjectId = useCallback(() => {
-    if (memoizedParams.projectId) return memoizedParams.projectId;
-    if (import.meta.env.VITE_PROJECT_ID) return import.meta.env.VITE_PROJECT_ID;
-    const savedSiteId = localStorage.getItem("currentSiteId");
-    return savedSiteId || "686520a55dab9a87f6bfdf6a";
-  }, [memoizedParams.projectId]);
+    return import.meta.env.VITE_PROJECT_ID;
+  }, []);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
     try {
@@ -110,8 +107,8 @@ export const useProcessData = (params = {}) => {
     // Subscribe to cache updates
     const unsubscribe = apiCache.subscribe(cacheKey, (cachedData) => {
       setData({
-        projectOurProcess: cachedData.projectInfo?.projectOurProcess || [],
-        projectCategory: cachedData.projectInfo?.projectCategory || 'Service'
+        projectOurProcess: cachedData.data.projectInfo?.projectOurProcess || [],
+        projectCategory: cachedData.data.projectInfo?.projectCategory || 'Service'
       });
       setIsLoading(false);
       setError(null);

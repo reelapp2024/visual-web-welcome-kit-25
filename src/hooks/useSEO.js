@@ -14,8 +14,7 @@ export const useSEO = (pageUrl) => {
     const fetchSeoData = async () => {
       try {
         setLoading(true);
-        const savedSiteId = localStorage.getItem("currentSiteId");
-        const projectId = savedSiteId || import.meta.env.VITE_PROJECT_ID ;
+        const projectId = import.meta.env.VITE_PROJECT_ID;
         
         const formData = new FormData();
         formData.append('projectId', projectId);

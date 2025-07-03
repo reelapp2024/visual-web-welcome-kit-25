@@ -9,10 +9,7 @@ const CleaningWhyChooseUs = () => {
   const [projectName, setprojectName] = useState("");
   const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
 
-
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
-
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,11 +35,7 @@ const CleaningWhyChooseUs = () => {
     fetchData();
   }, [projectId]);
 
-
   console.log(projectWhyChooseUs, "projectWhyChooseUs")
-
-
-
 
   return (
     <section className="py-20 bg-white font-poppins">
@@ -61,7 +54,6 @@ const CleaningWhyChooseUs = () => {
           {projectWhyChooseUs.map((feature, index) => (
             <div key={index} className="text-center group">
               <div className="bg-gray-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-
 
                 <div
                   className={`bg-gradient-to-br ${feature.gradient || 'from-gray-400 to-gray-600'
