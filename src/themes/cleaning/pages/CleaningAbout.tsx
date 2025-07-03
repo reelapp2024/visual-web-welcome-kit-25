@@ -1,6 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSEO } from '../../../hooks/useSEO';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningAboutUs from '../components/CleaningAboutUs';
 import CleaningWhyChooseUs from '../components/CleaningWhyChooseUs';
@@ -14,11 +14,7 @@ import { httpFile } from "../../../config.js";
 import { slugify } from "../../../extras/slug";
 
 const CleaningAbout = () => {
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
+  const { seoData } = useSEO('/about');
   const [aboutHeroText, setAboutHeroText] = useState('');
 
   const savedSiteId = localStorage.getItem("currentSiteId");
@@ -27,10 +23,6 @@ const CleaningAbout = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch SEO data
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/about`);
-        setSeoData(seoResponse.data.data);
-
         // Fetch hero text from my_site API
         const { data } = await httpFile.post("/webapp/v1/my_site", {
           projectId,

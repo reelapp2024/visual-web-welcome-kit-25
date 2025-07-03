@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSEO } from '../../../hooks/useSEO';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
 import CleaningServices from '../components/CleaningServices';
@@ -14,11 +14,7 @@ import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
 
 const CleaningServicesPage = () => {
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
+  const { seoData } = useSEO('/services');
   const [serviceHeroText, setServiceHeroText] = useState('');
 
   const savedSiteId = localStorage.getItem("currentSiteId");
@@ -27,10 +23,6 @@ const CleaningServicesPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch SEO data
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/services`);
-        setSeoData(seoResponse.data.data);
-
         // Fetch hero text from my_site API
         const { data } = await httpFile.post("/webapp/v1/my_site", {
           projectId,

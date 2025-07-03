@@ -1,9 +1,9 @@
-
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Link } from 'react-router-dom';
 import { Phone, Sparkles } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSEO } from '../../../hooks/useSEO';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningHero from '../components/CleaningHero';
 import CleaningAboutUs from '../components/CleaningAboutUs';
@@ -17,15 +17,10 @@ import CleaningFAQ from '../components/CleaningFAQ';
 import CleaningFooter from '../components/CleaningFooter';
 
 const CleaningIndex = () => {
+  const { seoData } = useSEO('/home');
   const [phoneNumber, setPhoneNumber] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
   const [CTA, setCTA] = useState([]);
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
-
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
@@ -45,10 +40,6 @@ const CleaningIndex = () => {
           setPhoneNumber(data.aboutUs.phone);
           setProjectCategory(data.projectInfo.serviceType);
         }
-
-        // Fetch SEO data for home page
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/home`);
-        setSeoData(seoResponse.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

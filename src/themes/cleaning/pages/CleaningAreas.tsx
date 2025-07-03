@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSEO } from '../../../hooks/useSEO';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
 import CleaningServiceAreas from '../components/CleaningServiceAreas';
@@ -10,24 +10,7 @@ import CleaningFooter from '../components/CleaningFooter';
 import { MapPin } from 'lucide-react';
 
 const CleaningAreas = () => {
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
-
-  useEffect(() => {
-    const fetchSeoData = async () => {
-      try {
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/areas`);
-        setSeoData(seoResponse.data.data);
-      } catch (error) {
-        console.error("Error fetching SEO data:", error);
-      }
-    };
-
-    fetchSeoData();
-  }, []);
+  const { seoData } = useSEO('/areas');
 
   return (
     <HelmetProvider>

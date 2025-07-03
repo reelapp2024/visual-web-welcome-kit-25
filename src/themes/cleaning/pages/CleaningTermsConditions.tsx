@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { httpFile } from "../../../config.js";
-import DOMPurify from 'dompurify';  // install with npm/yarn if needed
+import DOMPurify from 'dompurify';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningFooter from '../components/CleaningFooter';
 import { CheckCircle, FileText } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSEO } from '../../../hooks/useSEO';
 
 const CleaningTermsConditions = () => {
+  const { seoData } = useSEO('/terms-conditions');
   const [termsContent, setTermsContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
+  
 
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
@@ -36,8 +34,7 @@ const CleaningTermsConditions = () => {
           setTermsContent("<p>No terms and conditions available.</p>");
         }
 
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/terms-conditions`);
-        setSeoData(seoResponse.data.data);
+        
       } catch (err) {
         setError("Failed to load terms and conditions.");
         console.error(err);

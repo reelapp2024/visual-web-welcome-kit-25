@@ -1,6 +1,8 @@
 
 import React from 'react';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { currentTheme } from '../App';
+import { useSEO } from '../hooks/useSEO';
 
 // Cleaning Theme
 import CleaningAbout from '../themes/cleaning/pages/CleaningAbout';
@@ -18,20 +20,35 @@ import HVACAbout from '../themes/hvac/pages/HVACAbout';
 import PaintingAbout from '../themes/painting/pages/PaintingAbout';
 
 const ThemeAbout = () => {
-  switch (currentTheme) {
-    case 'cleaning':
-      return <CleaningAbout />;
-    case 'plumbing':
-      return <PlumbingAbout />;
-    case 'roofing':
-      return <RoofingAbout />;
-    case 'hvac':
-      return <HVACAbout />;
-    case 'painting':
-      return <PaintingAbout />;
-    default:
-      return <CleaningAbout />;
-  }
+  const { seoData } = useSEO('/about');
+
+  const renderThemeComponent = () => {
+    switch (currentTheme) {
+      case 'cleaning':
+        return <CleaningAbout />;
+      case 'plumbing':
+        return <PlumbingAbout />;
+      case 'roofing':
+        return <RoofingAbout />;
+      case 'hvac':
+        return <HVACAbout />;
+      case 'painting':
+        return <PaintingAbout />;
+      default:
+        return <CleaningAbout />;
+    }
+  };
+
+  return (
+    <HelmetProvider>
+      <Helmet>
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
+      </Helmet>
+      {renderThemeComponent()}
+    </HelmetProvider>
+  );
 };
 
 export default ThemeAbout;

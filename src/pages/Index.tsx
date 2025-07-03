@@ -1,9 +1,9 @@
 
 import React from 'react';
-import PlumbingIndex from '../themes/plumbing/pages/PlumbingIndex';
+import ThemeIndex from '../components/ThemeIndex';
 
 const Index = () => {
-  return <PlumbingIndex />;
+  return <ThemeIndex />;
 };
 
 export default Index;

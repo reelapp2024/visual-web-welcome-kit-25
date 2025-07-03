@@ -5,16 +5,13 @@ import CleaningHeader from '../components/CleaningHeader';
 import CleaningFooter from '../components/CleaningFooter';
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useSEO } from '../../../hooks/useSEO';
 
 const CleaningPrivacyPolicy = () => {
+  const { seoData } = useSEO('/privacy-policy');
   const [privacyContent, setPrivacyContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
 
   const savedSiteId = localStorage.getItem("currentSiteId");
   const projectId = savedSiteId || "685cffa53ee7098086538c06";
@@ -35,9 +32,6 @@ const CleaningPrivacyPolicy = () => {
         } else {
           setPrivacyContent("<p>No privacy policy available.</p>");
         }
-
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/privacy-policy`);
-        setSeoData(seoResponse.data.data);
       } catch (err) {
         setError("Failed to load privacy policy.");
         console.error(err);
