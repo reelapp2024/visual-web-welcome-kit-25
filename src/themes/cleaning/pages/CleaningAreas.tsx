@@ -1,41 +1,22 @@
-
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import SEOHelmet from '../../../components/SEOHelmet';
+import { useProjectId } from '../../../hooks/useProjectId.js';
+import { MapPin } from 'lucide-react';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
 import CleaningServiceAreas from '../components/CleaningServiceAreas';
 import ServiceMap from '../../../components/ServiceMap';
 import CleaningFooter from '../components/CleaningFooter';
-import { MapPin } from 'lucide-react';
 
 const CleaningAreas = () => {
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
+  const projectId = useProjectId();
 
-  useEffect(() => {
-    const fetchSeoData = async () => {
-      try {
-        const seoResponse = await httpFile.get(`/webapp/v1/seo/areas`);
-        setSeoData(seoResponse.data.data);
-      } catch (error) {
-        console.error("Error fetching SEO data:", error);
-      }
-    };
-
-    fetchSeoData();
-  }, []);
+  // No need for local SEO state since SEOHelmet handles it
 
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{seoData.meta_title}</title>
-        <meta name="description" content={seoData.meta_description} />
-        <meta name="keywords" content={seoData.meta_keywords} />
-      </Helmet>
+    <>
+      <SEOHelmet pageUrl="/areas" />
       
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
@@ -68,7 +49,7 @@ const CleaningAreas = () => {
         <CleaningCTA />
         <CleaningFooter />
       </div>
-    </HelmetProvider>
+    </>
   );
 };
 
