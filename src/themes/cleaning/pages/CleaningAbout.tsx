@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningAboutUs from '../components/CleaningAboutUs';
 import CleaningWhyChooseUs from '../components/CleaningWhyChooseUs';
@@ -46,8 +46,11 @@ const CleaningAbout = () => {
     fetchData();
   }, [projectId]);
 
+
+  console.log(seoData.meta_description,"meta description of page")
+
   return (
-    <HelmetProvider>
+     <>
       <Helmet>
         <title>{seoData.meta_title}</title>
         <meta name="description" content={seoData.meta_description} />
@@ -89,7 +92,7 @@ const CleaningAbout = () => {
         <CleaningCTA />
         <CleaningFooter />
       </div>
-    </HelmetProvider>
+  </>
   );
 };
 
