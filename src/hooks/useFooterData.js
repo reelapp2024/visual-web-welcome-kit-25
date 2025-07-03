@@ -7,9 +7,13 @@ export const useFooterData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Get project ID from environment variable only
+  // Project ID hierarchy: env > localStorage > hardcoded
   const getProjectId = () => {
-    return import.meta.env.VITE_PROJECT_ID;
+    if (import.meta.env.VITE_PROJECT_ID) {
+      return import.meta.env.VITE_PROJECT_ID;
+    }
+    const savedSiteId = localStorage.getItem("currentSiteId");
+    return savedSiteId || "6858eacc9ed4273493231137";
   };
 
   useEffect(() => {

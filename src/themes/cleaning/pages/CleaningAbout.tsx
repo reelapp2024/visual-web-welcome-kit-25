@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningAboutUs from '../components/CleaningAboutUs';
 import CleaningWhyChooseUs from '../components/CleaningWhyChooseUs';
@@ -10,6 +11,7 @@ import CleaningTestimonials from '../components/CleaningTestimonials';
 import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
 import { httpFile } from "../../../config.js";
+import { slugify } from "../../../extras/slug";
 
 const CleaningAbout = () => {
   const [seoData, setSeoData] = useState({
@@ -19,8 +21,8 @@ const CleaningAbout = () => {
   });
   const [aboutHeroText, setAboutHeroText] = useState('');
 
-  // Get project ID from environment variable only
-  const projectId = import.meta.env.VITE_PROJECT_ID;
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,11 +48,8 @@ const CleaningAbout = () => {
     fetchData();
   }, [projectId]);
 
-
-  console.log(seoData.meta_description,"meta description of page")
-
   return (
-     <>
+    <HelmetProvider>
       <Helmet>
         <title>{seoData.meta_title}</title>
         <meta name="description" content={seoData.meta_description} />
@@ -92,7 +91,7 @@ const CleaningAbout = () => {
         <CleaningCTA />
         <CleaningFooter />
       </div>
-  </>
+    </HelmetProvider>
   );
 };
 

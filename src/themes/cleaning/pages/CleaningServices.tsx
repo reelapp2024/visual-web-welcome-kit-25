@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -20,8 +21,8 @@ const CleaningServicesPage = () => {
   });
   const [serviceHeroText, setServiceHeroText] = useState('');
 
-  // Get project ID from environment variable only
-  const projectId = import.meta.env.VITE_PROJECT_ID;
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
     const fetchData = async () => {

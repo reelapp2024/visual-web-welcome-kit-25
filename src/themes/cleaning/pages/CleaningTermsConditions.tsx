@@ -16,8 +16,8 @@ const CleaningTermsConditions = () => {
     meta_keywords: ''
   });
 
-  // Get project ID from environment variable only
-  const projectId = import.meta.env.VITE_PROJECT_ID;
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +76,7 @@ const CleaningTermsConditions = () => {
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
                   Terms & Conditions
                 </h1>
+                {/* <p className="text-gray-600">Last updated: {new Date().toLocaleDateString()}</p> */}
               </div>
 
               <div className="space-y-8 text-gray-700">
