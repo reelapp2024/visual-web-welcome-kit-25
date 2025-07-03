@@ -1,9 +1,9 @@
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Link } from 'react-router-dom';
 import { Phone, Sparkles } from 'lucide-react';
-import SEOHelmet from '../../../components/SEOHelmet';
-import { useProjectId } from '../../../hooks/useProjectId.js';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningHero from '../components/CleaningHero';
 import CleaningAboutUs from '../components/CleaningAboutUs';
@@ -20,15 +20,19 @@ const CleaningIndex = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
   const [CTA, setCTA] = useState([]);
+  const [seoData, setSeoData] = useState({
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: ''
+  });
 
-  const projectId = useProjectId();
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   console.log(projectId ,"<<<<ProjectId")
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!projectId) return;
-      
       try {
         const { data } = await httpFile.post("/webapp/v1/my_site", {
           projectId,
@@ -41,6 +45,10 @@ const CleaningIndex = () => {
           setPhoneNumber(data.aboutUs.phone);
           setProjectCategory(data.projectInfo.serviceType);
         }
+
+        // Fetch SEO data for home page
+        const seoResponse = await httpFile.get(`/webapp/v1/seo/home`);
+        setSeoData(seoResponse.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -58,8 +66,12 @@ const CleaningIndex = () => {
   };
 
   return (
-    <>
-      <SEOHelmet pageUrl="/home" />
+    <HelmetProvider>
+      <Helmet>
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
+      </Helmet>
       
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
@@ -183,7 +195,7 @@ const CleaningIndex = () => {
         </section>
         <CleaningFooter />
       </div>
-    </>
+    </HelmetProvider>
   );
 };
 

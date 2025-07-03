@@ -1,43 +1,37 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { currentTheme } from '../App';
-import SEOHelmet from './SEOHelmet';
 
-// Import theme components
+// Cleaning Theme
 import CleaningCity from '../themes/cleaning/pages/CleaningCity';
+
+// Plumbing Theme
 import PlumbingCity from '../themes/plumbing/pages/PlumbingCity';
+
+// Roofing Theme
 import RoofingCity from '../themes/roofing/pages/RoofingCity';
+
+// HVAC Theme
 import HVACCity from '../themes/hvac/pages/HVACCity';
+
+// Painting Theme
 import PaintingCity from '../themes/painting/pages/PaintingCity';
 
 const ThemeCity = () => {
-  const location = useLocation();
-  const cityUrl = location.pathname;
-
-  const getThemeComponent = () => {
-    switch (currentTheme) {
-      case 'cleaning':
-        return <CleaningCity />;
-      case 'plumbing':
-        return <PlumbingCity />;
-      case 'roofing':
-        return <RoofingCity />;
-      case 'hvac':
-        return <HVACCity />;
-      case 'painting':
-        return <PaintingCity />;
-      default:
-        return <CleaningCity />;
-    }
-  };
-
-  return (
-    <>
-      <SEOHelmet pageUrl={cityUrl} />
-      {getThemeComponent()}
-    </>
-  );
+  switch (currentTheme) {
+    case 'cleaning':
+      return <CleaningCity />;
+    case 'plumbing':
+      return <PlumbingCity />;
+    case 'roofing':
+      return <RoofingCity />;
+    case 'hvac':
+      return <HVACCity />;
+    case 'painting':
+      return <PaintingCity />;
+    default:
+      return <CleaningCity />;
+  }
 };
 
 export default ThemeCity;

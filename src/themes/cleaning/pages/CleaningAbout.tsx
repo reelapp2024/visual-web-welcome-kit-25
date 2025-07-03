@@ -1,8 +1,5 @@
+
 import React, { useEffect, useState } from 'react';
-import SEOHelmet from '../../../components/SEOHelmet';
-import { useProjectId } from '../../../hooks/useProjectId.js';
-import { httpFile } from "../../../config.js";
-import { slugify } from "../../../extras/slug";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningAboutUs from '../components/CleaningAboutUs';
@@ -13,16 +10,28 @@ import CleaningGuarantee from '../components/CleaningGuarantee';
 import CleaningTestimonials from '../components/CleaningTestimonials';
 import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
+import { httpFile } from "../../../config.js";
+import { slugify } from "../../../extras/slug";
 
 const CleaningAbout = () => {
+  const [seoData, setSeoData] = useState({
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: ''
+  });
   const [aboutHeroText, setAboutHeroText] = useState('');
-  const projectId = useProjectId();
+
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!projectId) return;
-      
       try {
+        // Fetch SEO data
+        const seoResponse = await httpFile.get(`/webapp/v1/seo/about`);
+        setSeoData(seoResponse.data.data);
+
+        // Fetch hero text from my_site API
         const { data } = await httpFile.post("/webapp/v1/my_site", {
           projectId,
           pageType: "home",
@@ -40,8 +49,12 @@ const CleaningAbout = () => {
   }, [projectId]);
 
   return (
-    <>
-      <SEOHelmet pageUrl="/about" />
+    <HelmetProvider>
+      <Helmet>
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
+      </Helmet>
       
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
@@ -78,7 +91,7 @@ const CleaningAbout = () => {
         <CleaningCTA />
         <CleaningFooter />
       </div>
-    </>
+    </HelmetProvider>
   );
 };
 

@@ -1,8 +1,7 @@
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { useNavigate } from 'react-router-dom';
-import SEOHelmet from '../../../components/SEOHelmet';
-import { useProjectId } from '../../../hooks/useProjectId.js';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
@@ -16,13 +15,17 @@ const CleaningContact = () => {
   const [mainLocation, setMainLocation] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
   const [image, setImage] = useState("");
+  const [seoData, setSeoData] = useState({
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: ''
+  });
 
-  const projectId = useProjectId();
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const projectId = savedSiteId || "685cffa53ee7098086538c06";
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!projectId) return;
-      
       try {
         const { data } = await httpFile.post("/webapp/v1/my_site", {
           projectId,
@@ -36,6 +39,10 @@ const CleaningContact = () => {
           setProjectCategory(data.projectInfo.serviceType);
           setImage(data.projectInfo.images[3].url)
         }
+
+        // Fetch SEO data for contact page
+        const seoResponse = await httpFile.get(`/webapp/v1/seo/contact`);
+        setSeoData(seoResponse.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -45,8 +52,12 @@ const CleaningContact = () => {
   }, [projectId]);
 
   return (
-    <>
-      <SEOHelmet pageUrl="/contact" />
+    <HelmetProvider>
+      <Helmet>
+        <title>{seoData.meta_title}</title>
+        <meta name="description" content={seoData.meta_description} />
+        <meta name="keywords" content={seoData.meta_keywords} />
+      </Helmet>
       
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
@@ -127,7 +138,7 @@ const CleaningContact = () => {
         <CleaningCTA />
         <CleaningFooter />
       </div>
-    </>
+    </HelmetProvider>
   );
 };
 
