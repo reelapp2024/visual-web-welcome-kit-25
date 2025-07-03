@@ -37,8 +37,7 @@ const CleaningServiceDetail = () => {
   const [subServices, setSubServices] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId 
+ const projectId = import.meta.env.VITE_PROJECT_ID;
   const locationName = location.state?.locationName ? `in ${location.state.locationName}` : '';
   const [serviceId, setServiceId] = useState(location.state?.serviceId || "");
   let displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
@@ -201,7 +200,8 @@ const CleaningServiceDetail = () => {
 
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title}</title>
+      <title>{`${seoData?.meta_title} ${locationName}`}</title>
+
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
@@ -289,7 +289,7 @@ const CleaningServiceDetail = () => {
                 Our Simple Process
               </h2>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                Our streamlined 4-step process ensures you get professional cleaning service from start to finish.
+                Our streamlined 4-step process ensures you get professional {projectCategory} service from start to finish.
               </p>
             </div>
 

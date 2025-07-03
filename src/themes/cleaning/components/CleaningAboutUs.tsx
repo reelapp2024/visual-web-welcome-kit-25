@@ -29,9 +29,7 @@ const CleaningAboutUs: React.FC = () => {
   if (site && localStorage.getItem('currentSiteId') !== site) {
     localStorage.setItem('currentSiteId', site);
   }
-  const projectId =
-    localStorage.getItem('currentSiteId') || '685cffa53ee7098086538c06';
-
+const projectId = import.meta.env.VITE_PROJECT_ID;
   useEffect(() => {
     (async () => {
       try {

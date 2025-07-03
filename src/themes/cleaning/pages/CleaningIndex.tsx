@@ -21,10 +21,9 @@ const CleaningIndex = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
   const [CTA, setCTA] = useState([]);
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
-  console.log(projectId ,"<<<<ProjectId")
+  console.log(projectId, "<<<<ProjectId")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +31,7 @@ const CleaningIndex = () => {
         const { data } = await httpFile.post("/webapp/v1/my_site", {
           projectId,
           pageType: "home",
-          reqFrom:"home"
+          reqFrom: "home"
         });
 
         if (data.projectInfo && data.projectInfo.serviceType) {
@@ -63,11 +62,11 @@ const CleaningIndex = () => {
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
-      
+
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
         <CleaningHero />
-        
+
         <CleaningAboutUs />
         <CleaningServices />
         {/* First CTA */}

@@ -17,8 +17,7 @@ const CleaningContact = () => {
   const [projectCategory, setProjectCategory] = useState("");
   const [image, setImage] = useState("");
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     const fetchData = async () => {

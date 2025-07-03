@@ -7,10 +7,9 @@ const CleaningRelatedServices = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 🚀 Track route changes
   const [projectServices, setProjectServices] = useState([]);
+  const [projectCategory, setProjectCategory] = useState("");
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
-
+const projectId = import.meta.env.VITE_PROJECT_ID;
   const fetchData = async () => {
     try {
       const { data } = await httpFile.post("/webapp/v1/fetch_random_services", {
@@ -23,6 +22,24 @@ const CleaningRelatedServices = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+   useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const { data } = await httpFile.post("/webapp/v1/my_site", {
+            projectId,
+            pageType: "home",
+            reqFrom: "cleaningServices"
+          });
+          if (data.projectInfo && data.projectInfo.serviceType) {
+            setProjectCategory(data.projectInfo.serviceType);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }, [projectId]);
 
   useEffect(() => {
     fetchData();
@@ -63,7 +80,7 @@ const CleaningRelatedServices = () => {
             Related Services
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore our complete range of professional cleaning services
+            Explore our complete range of professional {projectCategory} services
           </p>
         </div>
 

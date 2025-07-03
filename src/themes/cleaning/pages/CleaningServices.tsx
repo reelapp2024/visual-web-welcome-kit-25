@@ -17,6 +17,7 @@ import { Sparkles } from 'lucide-react';
 const CleaningServicesPage = () => {
   const { seoData } = useSEO('/services');
   const [serviceHeroText, setServiceHeroText] = useState('');
+  const [serviceType, setServiceType] = useState('');
 
   const projectId = import.meta.env.VITE_PROJECT_ID;
 
@@ -31,6 +32,8 @@ const CleaningServicesPage = () => {
 
         if (data.projectInfo && data.projectInfo.serviceHeroText) {
           setServiceHeroText(data.projectInfo.serviceHeroText);
+          setServiceType(data.projectInfo.serviceType);
+          
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -66,7 +69,7 @@ const CleaningServicesPage = () => {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
             <div className="flex items-center justify-center mb-4">
               <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
-              <h1 className="text-4xl md:text-5xl font-bold">Professional Cleaning Services</h1>
+              <h1 className="text-4xl md:text-5xl font-bold">Professional {serviceType} Services</h1>
             </div>
             <p className="text-xl text-green-100 max-w-3xl mx-auto">
               {serviceHeroText || 'Comprehensive residential and commercial cleaning solutions with eco-friendly products and expert cleaners. Same-day booking and satisfaction guaranteed.'}

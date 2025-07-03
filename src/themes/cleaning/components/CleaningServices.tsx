@@ -7,9 +7,7 @@ const CleaningServices = () => {
   const [projectServices, setProjectServices] = useState([]);
   const [projectCategory, setProjectCategory] = useState("");
 
-  const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
-
+ const projectId = import.meta.env.VITE_PROJECT_ID;
   // Helper to truncate at first period
   const getTruncatedDescription = (text) => {
     if (!text) return '';

@@ -32,8 +32,7 @@ const conjunctions = [
   if (site && localStorage.getItem('currentSiteId') !== site) {
     localStorage.setItem('currentSiteId', site);
   }
-  const projectId = localStorage.getItem('currentSiteId') || '68593752dd530358b97f0a3f';
-
+const projectId = import.meta.env.VITE_PROJECT_ID;
   useEffect(() => {
     (async () => {
       try {
