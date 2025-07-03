@@ -11,6 +11,32 @@ import { MapPin } from 'lucide-react';
 
 const CleaningAreas = () => {
   const { seoData } = useSEO('/areas');
+  const [aboutHeroText, setAboutHeroText] = useState('');
+    const [projectCategory, setProjectCategory] = useState("");
+  
+    const projectId = import.meta.env.VITE_PROJECT_ID;
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          // Fetch hero text from my_site API
+          const { data } = await httpFile.post("/webapp/v1/my_site", {
+            projectId,
+            pageType: "home",
+          });
+  
+          if (data.projectInfo && data.projectInfo.aboutHeroText) {
+            setAboutHeroText(data.projectInfo.aboutHeroText);
+          setProjectCategory(data.projectInfo.serviceType);
+
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+  
+      fetchData();
+    }, [projectId]);
 
   return (
     <HelmetProvider>
@@ -41,13 +67,13 @@ const CleaningAreas = () => {
               <h1 className="text-4xl md:text-5xl font-bold">Areas We Serve</h1>
             </div>
             <p className="text-xl text-green-100 max-w-3xl mx-auto">
-              Professional cleaning services throughout the metropolitan area with same-day booking available.
+              Professional {projectCategory} services throughout the metropolitan area. {aboutHeroText}.
             </p>
           </div>
         </section>
 
         <CleaningServiceAreas />
-        <ServiceMap theme="cleaning" />
+       
         <CleaningCTA />
         <CleaningFooter />
       </div>

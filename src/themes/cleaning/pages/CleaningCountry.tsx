@@ -6,6 +6,7 @@ import { MapPin, Clock, Shield, Building } from 'lucide-react';
 import { Star, StarHalf, Quote } from "lucide-react";
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Phone } from 'lucide-react';
+import { useSEO } from '../../../hooks/useSEO';
 
 interface Testimonial {
   review_text: string;
@@ -60,11 +61,8 @@ const CleaningCountry = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [locInfo, setLocInfo] = useState<{ name: string; lat: number; lng: number } | null>(null);
 
-  const [seoData, setSeoData] = useState({
-    meta_title: '',
-    meta_description: '',
-    meta_keywords: ''
-  });
+  const { seoData } = useSEO('/');
+
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
 
@@ -204,10 +202,8 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
           }
         }
 
-        // Fetch SEO data based on current route
-        let seoEndpoint = `/webapp/v1/seo/${slug}`;
-        const seoResponse = await httpFile.get(seoEndpoint);
-        setSeoData(seoResponse.data.data);
+     
+       
       } catch (error) {
         console.error("Error fetching data:", error);
         setIsLoading(false);
@@ -294,14 +290,15 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
     return <CleaningLoader />;
   }
 
-  console.log(countryDescription,"countryDescriptioncountryDescriptioncountryDescriptioncountryDescription")
+  // console.log(countryDescription,"countryDescriptioncountryDescriptioncountryDescriptioncountryDescription")
 
   const HeroIcon = getHeroIcon();
 
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title}</title>
+              <title>{`${seoData?.meta_title} in ${locationName}`}</title>
+
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>

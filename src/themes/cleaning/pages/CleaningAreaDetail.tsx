@@ -132,11 +132,12 @@ const CleaningAreaDetail = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{seoData.meta_title}</title>
+        <title>{`${seoData?.meta_title} ${locationName}`}</title>
+
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
-      
+
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
 
@@ -152,7 +153,7 @@ const CleaningAreaDetail = () => {
 
               {/* Main Description */}
               <p className="text-xl text-green-100 max-w-2xl">
-                 {projectCategory} services in {humanizeString(cityName)}.
+                {projectCategory} services in {humanizeString(cityName)}.
               </p>
 
               {/* Additional Description */}

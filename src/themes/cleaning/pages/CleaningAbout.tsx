@@ -75,7 +75,7 @@ const CleaningAbout = () => {
         </section>
 
         <CleaningAboutUs />
-        <CleaningWhyChooseUs />
+        {/* <CleaningWhyChooseUs /> */}
         <CleaningCTA />
         <CleaningProcess />
         <CleaningGuarantee />

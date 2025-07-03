@@ -34,7 +34,7 @@ export const useProcessData = (params = {}) => {
       // If we have cached data and not forcing refresh, use it
       if (cachedData && !forceRefresh) {
         setData({
-          projectOurProcess: cachedData.data.projectInfo?.projectOurProcess || [],
+          projectOurProcess: cachedData.data.projectInfo?.ourProcessSection || [],
           projectCategory: cachedData.data.projectInfo?.projectCategory || 'Service'
         });
         setIsLoading(false);
@@ -58,7 +58,7 @@ export const useProcessData = (params = {}) => {
         console.log('Using cached process data - ETag match');
         if (cachedData) {
           setData({
-            projectOurProcess: cachedData.data.projectInfo?.projectOurProcess || [],
+            projectOurProcess: cachedData.data.projectInfo?.ourProcessSection || [],
             projectCategory: cachedData.data.projectInfo?.projectCategory || 'Service'
           });
           setIsLoading(false);
@@ -76,7 +76,7 @@ export const useProcessData = (params = {}) => {
 
       // Update state
       const processData = {
-        projectOurProcess: responseData.projectInfo?.projectOurProcess || [],
+        projectOurProcess: responseData.projectInfo?.ourProcessSection || [],
         projectCategory: responseData.projectInfo?.projectCategory || 'Service'
       };
 
@@ -107,7 +107,7 @@ export const useProcessData = (params = {}) => {
     // Subscribe to cache updates
     const unsubscribe = apiCache.subscribe(cacheKey, (cachedData) => {
       setData({
-        projectOurProcess: cachedData.data.projectInfo?.projectOurProcess || [],
+        projectOurProcess: cachedData.data.projectInfo?.ourProcessSection || [],
         projectCategory: cachedData.data.projectInfo?.projectCategory || 'Service'
       });
       setIsLoading(false);
@@ -121,7 +121,7 @@ export const useProcessData = (params = {}) => {
     } else {
       // Use cached data immediately
       setData({
-        projectOurProcess: cachedData.data.projectInfo?.projectOurProcess || [],
+        projectOurProcess: cachedData.data.projectInfo?.ourProcessSection || [],
         projectCategory: cachedData.data.projectInfo?.projectCategory || 'Service'
       });
       setIsLoading(false);

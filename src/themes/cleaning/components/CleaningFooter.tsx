@@ -113,8 +113,8 @@ const CleaningFooter = () => {
               © 2025 {projectName}. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link to="/cleaning/terms-conditions" className="text-gray-400 hover:text-green-500 text-sm transition-colors">Terms</Link>
-              <Link to="/cleaning/privacy-policy" className="text-gray-400 hover:text-green-500 text-sm transition-colors">Privacy</Link>
+              <Link to="/terms-conditions" className="text-gray-400 hover:text-green-500 text-sm transition-colors">Terms</Link>
+              <Link to="/privacy-policy" className="text-gray-400 hover:text-green-500 text-sm transition-colors">Privacy</Link>
               {/* <Link to="/disclaimer" className="text-gray-400 hover:text-green-500 text-sm transition-colors">Disclaimer</Link> */}
             </div>
           </div>
