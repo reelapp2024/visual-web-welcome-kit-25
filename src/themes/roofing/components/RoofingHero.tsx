@@ -1,8 +1,41 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Phone, Clock, CheckCircle, Star, Zap, Home, Shield, Award } from 'lucide-react';
+import { httpFile } from '../../../config.js';
 
 const RoofingHero = () => {
+  const navigate = useNavigate();
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [projectCategory, setProjectCategory] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  const projectId = import.meta.env.VITE_PROJECT_ID;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await httpFile.post('/webapp/v1/my_site', {
+          projectId,
+          pageType: 'home',
+          reqFrom: 'Hero'
+        });
+
+        const info = data.projectInfo || {};
+        const about = data.aboutUs || {};
+
+        setProjectCategory(info.serviceType || '');
+        setPhoneNumber(about.phone || '');
+      } catch (err) {
+        console.error('Fetch hero data error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [projectId]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden font-poppins">
       {/* Background with geometric overlay */}
@@ -83,19 +116,19 @@ const RoofingHero = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 items-start mb-8">
               <a 
-                href="tel:5551234567"
+                href={`tel:${phoneNumber}`}
                 className="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white px-6 py-3 rounded-lg font-bold text-lg transition-all duration-300 flex items-center space-x-2 shadow-xl border border-orange-600/50 w-full sm:w-auto justify-center"
               >
                 <Phone size={20} className="group-hover:animate-pulse" />
-                <span>Call: (555) 123-4567</span>
+                <span>Call Now: {phoneNumber}</span>
               </a>
               
-              <a 
-                href="#free-quote"
+              <button 
+                onClick={() => navigate('/contact')}
                 className="group bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold text-lg transition-all duration-300 flex items-center space-x-2 border border-slate-600 w-full sm:w-auto justify-center"
               >
-                <span>Get Free Quote</span>
-              </a>
+                <span>Free Quote</span>
+              </button>
             </div>
           </div>
 
@@ -160,7 +193,7 @@ const RoofingHero = () => {
       {/* Floating call button */}
       <div className="fixed bottom-6 right-6 z-50 md:hidden">
         <a 
-          href="tel:5551234567"
+          href={`tel:${phoneNumber}`}
           className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-full shadow-2xl relative"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full animate-ping opacity-75"></div>
