@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +17,7 @@ const CleaningContact = () => {
   const [projectCategory, setProjectCategory] = useState("");
   const [image, setImage] = useState("");
 
-  const projectId = import.meta.env.VITE_PROJECT_ID;
+const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,27 +70,9 @@ const CleaningContact = () => {
               <Sparkles className="w-8 h-8 text-emerald-400 mr-3" />
               <h1 className="text-4xl md:text-5xl font-bold">Contact Us</h1>
             </div>
-            <p className="text-xl text-green-100 max-w-3xl mx-auto mb-12">
+            <p className="text-xl text-green-100 max-w-3xl mx-auto">
               Ready for professional {projectCategory}? Contact us today for a free quote and same-day booking.
             </p>
-            
-            {/* CTA Buttons - Same as homepage */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <a
-                href={`tel:${phoneNumber}`}
-                className="group bg-white text-green-600 px-8 py-5 rounded-2xl font-bold text-lg transition-transform hover:scale-105 shadow-2xl flex items-center justify-center space-x-3"
-              >
-                <Phone size={24} className="group-hover:animate-bounce" />
-                <span>Call Now: {phoneNumber}</span>
-              </a>
-              <button
-                onClick={() => navigate('/contact')}
-                className="group bg-emerald-500/80 backdrop-blur-sm hover:bg-emerald-400 text-white px-8 py-5 rounded-2xl font-bold text-lg flex items-center justify-center space-x-3 transition-transform hover:scale-105 border border-white/30"
-              >
-                <Sparkles size={24} className="group-hover:rotate-12 transition-transform" />
-                <span>Free Quote</span>
-              </button>
-            </div>
           </div>
         </section>
 
@@ -135,8 +116,12 @@ const CleaningContact = () => {
                       <p className="text-sm text-green-600">Free estimates in service area</p>
                     </div>
                   </div>
+
+                
                 </div>
               </div>
+
+             
             </div>
           </div>
         </section>
