@@ -1,4 +1,3 @@
-// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,6 +18,11 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    outDir: "dist", // Explicitly confirm output directory
+    outDir: "dist",
+  },
+  optimizeDeps: {
+    exclude: [
+      "lovable-tagger" // Add any additional problematic packages here
+    ],
   },
 }));

@@ -29,7 +29,7 @@ const CleaningAboutUs: React.FC = () => {
   if (site && localStorage.getItem('currentSiteId') !== site) {
     localStorage.setItem('currentSiteId', site);
   }
-const projectId = import.meta.env.VITE_PROJECT_ID;
+  const projectId = import.meta.env.VITE_PROJECT_ID;
   useEffect(() => {
     (async () => {
       try {
@@ -61,6 +61,12 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
     })();
   }, [projectId]);
 
+  // Split projectDescription into two parts
+  const descriptionParts = projectDescription.split(/(?<=[.?!])\s+/); // splits by sentence endings
+  const firstPart = descriptionParts.slice(0, 2).join(' ');
+  const secondPart = descriptionParts.slice(2).join(' ');
+
+
   if (isLoading) return <CleaningLoader />;
 
   return (
@@ -72,9 +78,15 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
               Professional {projectCategory} Solutions You Can Trust
             </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              {projectDescription}
+            <p className="text-lg text-gray-600 mb-4 leading-relaxed">
+              {firstPart}
             </p>
+            {secondPart && (
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                {secondPart}
+              </p>
+            )}
+
 
             <div className="grid grid-cols-2 gap-6">
               {stats.map((stat) => (

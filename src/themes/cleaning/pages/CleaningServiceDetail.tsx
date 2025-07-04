@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
 import { useMemo } from 'react';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
@@ -30,6 +32,8 @@ const CleaningServiceDetail = () => {
   const [serviceImage, setServiceImage] = useState("");
   const [ProjectBaseImage, setProjectBaseImage] = useState("");
   const [stepProcess, setStepProcess] = useState([]);
+    const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  
   const [isLoading, setIsLoading] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [reloadFlag, setReloadFlag] = useState(0);
@@ -52,6 +56,7 @@ const CleaningServiceDetail = () => {
   const [cta4, setCta4] = useState(null);
   const [projectWhyChooseUs, setprojectWhyChooseUs] = useState([]);
 
+  const [projectFaqs, setprojectFaqs] = useState([]);
 
 
   // extract the slug after "/services/"
@@ -132,6 +137,7 @@ const CleaningServiceDetail = () => {
           setPromiseLine(data.service.promiseLine)
           setprojectWhyChooseUs(data.service.whyChooseUsSection);
 
+          setprojectFaqs(data.faq || []);
 
           // Parse subServices from comma-separated string
           const subServicesArray = Array.isArray(data.service.subServices)
@@ -180,6 +186,11 @@ const CleaningServiceDetail = () => {
     fetchData();
   }, [projectId]);
   const hasLocationName = Boolean(location.state?.locationName);
+  let inlocationName=''
+  if(hasLocationName){
+  inlocationName = `in ${location.state?.locationName}`;
+
+  }
   const rawDescription = serviceDetails?.service_description || "";
   // Always clean it first:
   const cleaned = removeDot(rawDescription);
@@ -255,7 +266,7 @@ const CleaningServiceDetail = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-                  Our {displayServiceName} Services Include
+                  Our {displayServiceName} Services {inlocationName} Include
                 </h2>
                 <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                   We offer comprehensive {displayServiceName.toLowerCase()} services to meet all your needs.
@@ -271,7 +282,7 @@ const CleaningServiceDetail = () => {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors duration-300">
-                          {service}
+                          {service} service {inlocationName}
                         </h3>
                       </div>
                     </div>
@@ -286,10 +297,10 @@ const CleaningServiceDetail = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-                Our Simple Process
+                Our Simple {displayServiceName} Process {inlocationName}
               </h2>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                Our streamlined 4-step process ensures you get professional {projectCategory} service from start to finish.
+                Our streamlined 4-step {displayServiceName} process ensures you get professional {projectCategory} service from start to finish.
               </p>
             </div>
 
@@ -362,7 +373,7 @@ const CleaningServiceDetail = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-                Why Choose {projectName}?
+                Why Choose {displayServiceName} by {projectName}  {inlocationName}?
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 When you choose us, you're choosing quality, reliability, and exceptional service
@@ -400,7 +411,7 @@ const CleaningServiceDetail = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-                Our {displayServiceName} Guarantee
+                Our {displayServiceName} Guarantee {inlocationName}
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                 {guaranteeText}
@@ -467,6 +478,45 @@ const CleaningServiceDetail = () => {
         ) : null}  {/* This will render nothing if cta1 is not available */}
 
         <CleaningRelatedServices />
+
+          {/* FAQ Section */}
+        {projectFaqs.length > 0 && (
+          <section className="py-20 bg-white font-poppins">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
+                  Frequently Asked Questions
+                </h2>
+                <p className="text-xl text-gray-600">
+                  Got questions? We've got answers. Here are the most common questions about our {displayServiceName} services.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {projectFaqs.map((faq, index) => (
+                  <div key={index} className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
+                    <button
+                      className="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gray-100 transition-colors duration-200"
+                      onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
+                    >
+                      <h3 className="text-lg font-bold text-gray-900 pr-4">{faq.question}</h3>
+                      {openFAQ === index ? (
+                        <ChevronUp className="w-6 h-6 text-green-600 flex-shrink-0" />
+                      ) : (
+                        <ChevronDown className="w-6 h-6 text-gray-400 flex-shrink-0" />
+                      )}
+                    </button>
+                    {openFAQ === index && (
+                      <div className="px-8 pb-6">
+                        <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
         {/* <CleaningServiceAreas /> */}
         <CleaningFooter />
       </div>

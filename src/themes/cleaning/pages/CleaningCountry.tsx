@@ -352,7 +352,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
 
                 <div className="flex items-center justify-center space-x-2">
                   <Clock className="w-6 h-6 text-emerald-400" />
-                  <span className="text-lg">Same-day available</span>
+                 
                 </div>
               </div>
             ) : (
@@ -570,7 +570,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
           </div>
         </section>
 
-        {pageType === 'country' && <ServiceMap theme="cleaning" />}
+
 
         {/* FAQ Section */}
         {projectFaqs.length > 0 && (
