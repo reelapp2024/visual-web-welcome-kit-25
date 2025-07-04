@@ -8,8 +8,9 @@ import Index from './pages/Index';
 
 const queryClient = new QueryClient();
 
-// Export currentTheme for theme switching
-export const currentTheme = 'cleaning';
+// Define theme type and export currentTheme for theme switching
+type Theme = 'cleaning' | 'plumbing' | 'roofing' | 'hvac' | 'painting';
+export const currentTheme: Theme = 'cleaning';
 
 function App() {
   return (
