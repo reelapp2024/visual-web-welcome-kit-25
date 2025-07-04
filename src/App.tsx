@@ -1,10 +1,11 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';  // Import HelmetProvider
+import { HelmetProvider } from 'react-helmet-async';
+import ScrollToTop from "./components/ScrollToTop";
+
 // Dynamic Theme Components
 import ThemeIndex from "./components/ThemeIndex";
 import ThemeAbout from "./components/ThemeAbout";
@@ -47,11 +48,12 @@ export const currentTheme: ThemeType = "cleaning";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <HelmetProvider>  {/* Wrap the app with HelmetProvider */}
+    <HelmetProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Main Theme Routes */}
             <Route path="/" element={<ThemeIndex />} />

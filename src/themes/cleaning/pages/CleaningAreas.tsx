@@ -1,42 +1,46 @@
+
 import React, { useEffect, useState } from 'react';
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useSEO } from '../../../hooks/useSEO';
+import { useNavigate } from 'react-router-dom';
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
 import CleaningServiceAreas from '../components/CleaningServiceAreas';
 import ServiceMap from '../../../components/ServiceMap';
 import CleaningFooter from '../components/CleaningFooter';
-import { MapPin } from 'lucide-react';
+import { MapPin, Phone, Sparkles } from 'lucide-react';
 
 const CleaningAreas = () => {
   const { seoData } = useSEO('/areas');
+  const navigate = useNavigate();
   const [aboutHeroText, setAboutHeroText] = useState('');
-    const [projectCategory, setProjectCategory] = useState("");
+  const [projectCategory, setProjectCategory] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
   
-    const projectId = import.meta.env.VITE_PROJECT_ID;
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          // Fetch hero text from my_site API
-          const { data } = await httpFile.post("/webapp/v1/my_site", {
-            projectId,
-            pageType: "home",
-          });
-  
-          if (data.projectInfo && data.projectInfo.aboutHeroText) {
-            setAboutHeroText(data.projectInfo.aboutHeroText);
-          setProjectCategory(data.projectInfo.serviceType);
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch hero text from my_site API
+        const { data } = await httpFile.post("/webapp/v1/my_site", {
+          projectId,
+          pageType: "home",
+        });
+
+        if (data.projectInfo && data.projectInfo.aboutHeroText) {
+          setAboutHeroText(data.projectInfo.aboutHeroText);
+          setProjectCategory(data.projectInfo.serviceType);
+          setPhoneNumber(data.aboutUs.phone);
         }
-      };
-  
-      fetchData();
-    }, [projectId]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [projectId]);
 
   return (
     <HelmetProvider>
@@ -66,9 +70,27 @@ const CleaningAreas = () => {
               <MapPin className="w-8 h-8 text-emerald-400 mr-3" />
               <h1 className="text-4xl md:text-5xl font-bold">Areas We Serve</h1>
             </div>
-            <p className="text-xl text-green-100 max-w-3xl mx-auto">
+            <p className="text-xl text-green-100 max-w-3xl mx-auto mb-12">
               Professional {projectCategory} services throughout the metropolitan area. {aboutHeroText}.
             </p>
+            
+            {/* CTA Buttons - Same as homepage */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <a
+                href={`tel:${phoneNumber}`}
+                className="group bg-white text-green-600 px-8 py-5 rounded-2xl font-bold text-lg transition-transform hover:scale-105 shadow-2xl flex items-center justify-center space-x-3"
+              >
+                <Phone size={24} className="group-hover:animate-bounce" />
+                <span>Call Now: {phoneNumber}</span>
+              </a>
+              <button
+                onClick={() => navigate('/contact')}
+                className="group bg-emerald-500/80 backdrop-blur-sm hover:bg-emerald-400 text-white px-8 py-5 rounded-2xl font-bold text-lg flex items-center justify-center space-x-3 transition-transform hover:scale-105 border border-white/30"
+              >
+                <Sparkles size={24} className="group-hover:rotate-12 transition-transform" />
+                <span>Free Quote</span>
+              </button>
+            </div>
           </div>
         </section>
 
