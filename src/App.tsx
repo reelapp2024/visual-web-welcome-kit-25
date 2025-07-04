@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -6,6 +7,9 @@ import ScrollToTop from './components/ScrollToTop';
 import Index from './pages/Index';
 
 const queryClient = new QueryClient();
+
+// Export currentTheme for theme switching
+export const currentTheme = 'cleaning';
 
 function App() {
   return (
