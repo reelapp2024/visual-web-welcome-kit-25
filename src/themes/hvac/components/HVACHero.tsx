@@ -1,41 +1,8 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { Phone, Clock, Thermometer, Wind, Shield, Award } from 'lucide-react';
-import { httpFile } from '../../../config.js';
 
 const HVACHero = () => {
-  const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [projectCategory, setProjectCategory] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-
-  const projectId = import.meta.env.VITE_PROJECT_ID;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await httpFile.post('/webapp/v1/my_site', {
-          projectId,
-          pageType: 'home',
-          reqFrom: 'Hero'
-        });
-
-        const info = data.projectInfo || {};
-        const about = data.aboutUs || {};
-
-        setProjectCategory(info.serviceType || '');
-        setPhoneNumber(about.phone || '');
-      } catch (err) {
-        console.error('Fetch hero data error:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [projectId]);
-
   return (
     <section className="relative py-20 bg-gradient-to-br from-orange-600 via-red-600 to-orange-800 text-white overflow-hidden min-h-[700px] flex items-center font-poppins">
       {/* Geometric Background */}
@@ -76,20 +43,20 @@ const HVACHero = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <a 
-                href={`tel:${phoneNumber}`}
+                href="tel:5551234567"
                 className="group bg-white text-orange-600 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-3 shadow-xl transform hover:scale-105"
               >
                 <Phone size={24} className="group-hover:animate-pulse" />
-                <span>Call Now: {phoneNumber}</span>
+                <span>Emergency: (555) 123-4567</span>
               </a>
               
-              <button
-                onClick={() => navigate('/contact')}
+              <a 
+                href="/hvac/services"
                 className="group bg-red-500/80 backdrop-blur-sm hover:bg-red-400 text-white px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-3 border border-white/30 transform hover:scale-105"
               >
                 <Clock size={24} />
-                <span>Free Quote</span>
-              </button>
+                <span>View Services</span>
+              </a>
             </div>
           </div>
 
