@@ -1,8 +1,41 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Phone, Clock, CheckCircle, Star, Zap, Wrench } from 'lucide-react';
+import { httpFile } from '../../../config.js';
 
 const PlumbingHero = () => {
+  const navigate = useNavigate();
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [projectCategory, setProjectCategory] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  const projectId = import.meta.env.VITE_PROJECT_ID;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await httpFile.post('/webapp/v1/my_site', {
+          projectId,
+          pageType: 'home',
+          reqFrom: 'Hero'
+        });
+
+        const info = data.projectInfo || {};
+        const about = data.aboutUs || {};
+
+        setProjectCategory(info.serviceType || '');
+        setPhoneNumber(about.phone || '');
+      } catch (err) {
+        console.error('Fetch hero data error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [projectId]);
+
   return (
     <section className="relative min-h-[700px] flex items-center justify-center overflow-hidden font-poppins">
       {/* Background with gradient overlay */}
@@ -64,7 +97,7 @@ const PlumbingHero = () => {
               <div className="text-left">
                 <div className="text-xs sm:text-sm text-white/70 uppercase tracking-wide font-semibold">Call Now - 24/7 Emergency Service</div>
                 <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white break-all sm:break-normal">
-                  (555) 123-4567
+                  {phoneNumber || '(555) 123-4567'}
                 </div>
               </div>
             </div>
@@ -73,20 +106,20 @@ const PlumbingHero = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
             <a 
-              href="tel:5551234567"
+              href={`tel:${phoneNumber}`}
               className="group bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-12 lg:py-6 rounded-full font-bold text-lg sm:text-xl lg:text-2xl transition-all duration-300 flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-center shadow-2xl transform hover:scale-105"
             >
               <Phone size={24} className="group-hover:animate-pulse flex-shrink-0" />
-              <span className="whitespace-nowrap">CALL NOW: (555) 123-4567</span>
+              <span className="whitespace-nowrap">Call Now: {phoneNumber}</span>
             </a>
             
-            <a 
-              href="tel:5551234567"
+            <button
+              onClick={() => navigate('/contact')}
               className="group bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-12 lg:py-6 rounded-full font-bold text-lg sm:text-xl lg:text-2xl transition-all duration-300 flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-center shadow-2xl transform hover:scale-105"
             >
               <Clock size={24} className="group-hover:rotate-12 transition-transform duration-200 flex-shrink-0" />
-              <span className="whitespace-nowrap">Emergency Service</span>
-            </a>
+              <span className="whitespace-nowrap">Free Quote</span>
+            </button>
           </div>
 
           {/* Urgency Message */}
@@ -103,7 +136,7 @@ const PlumbingHero = () => {
       {/* Floating Call Button for Mobile */}
       <div className="fixed bottom-6 right-6 z-50 md:hidden">
         <a 
-          href="tel:5551234567"
+          href={`tel:${phoneNumber}`}
           className="bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-white p-4 rounded-full shadow-2xl animate-bounce"
         >
           <Phone size={24} />
