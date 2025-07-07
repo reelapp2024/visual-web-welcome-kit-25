@@ -61,7 +61,7 @@ export const useSiteSettings = () => {
   const getThemeDefaults = (theme) => {
     const themeDefaults = {
       cleaning: {
-        primary: '#10B981',
+        primary: '#00FFFF',
         secondary: '#059669', 
         accent: '#34D399',
         gradient: 'from-green-600 to-emerald-600'
