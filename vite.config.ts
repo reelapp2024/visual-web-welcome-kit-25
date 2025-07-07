@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,10 +20,17 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist",
+    rollupOptions: {
+      external: [],
+    },
   },
   optimizeDeps: {
     exclude: [
-      "lovable-tagger" // Add any additional problematic packages here
+      "lovable-tagger"
     ],
+    force: true,
+  },
+  define: {
+    global: 'globalThis',
   },
 }));
