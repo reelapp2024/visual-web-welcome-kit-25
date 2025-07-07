@@ -1,15 +1,21 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { httpFile } from "../../../config.js";
-import DynamicFAIcon from '../../../extras/DynamicFAIcon.js'; // Adjust if path differs
+import DynamicFAIcon from '../../../extras/DynamicFAIcon.js';
+import { useColors } from '../../../components/DynamicColorProvider';
+import { getThemeTextGradient, getThemeGradient } from '../../../utils/colorUtils.js';
+import { currentTheme } from '../../../App';
 
 const CleaningRelatedServices = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 🚀 Track route changes
+  const location = useLocation();
+  const { colors, isLoading: colorsLoading } = useColors();
   const [projectServices, setProjectServices] = useState([]);
   const [projectCategory, setProjectCategory] = useState("");
 
-const projectId = import.meta.env.VITE_PROJECT_ID;
+  const projectId = import.meta.env.VITE_PROJECT_ID;
+  
   const fetchData = async () => {
     try {
       const { data } = await httpFile.post("/webapp/v1/fetch_random_services", {
@@ -23,23 +29,23 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
     }
   };
 
-   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const { data } = await httpFile.post("/webapp/v1/my_site", {
-            projectId,
-            pageType: "home",
-            reqFrom: "cleaningServices"
-          });
-          if (data.projectInfo && data.projectInfo.serviceType) {
-            setProjectCategory(data.projectInfo.serviceType);
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await httpFile.post("/webapp/v1/my_site", {
+          projectId,
+          pageType: "home",
+          reqFrom: "cleaningServices"
+        });
+        if (data.projectInfo && data.projectInfo.serviceType) {
+          setProjectCategory(data.projectInfo.serviceType);
         }
-      };
-      fetchData();
-    }, [projectId]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [projectId]);
 
   useEffect(() => {
     fetchData();
@@ -47,7 +53,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     if (location.state) {
-      fetchData(); // Re-fetch on route state change
+      fetchData();
     }
   }, [location]);
 
@@ -65,18 +71,20 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
     });
   };
 
-  // Helper to truncate at first period
   const getTruncatedDescription = (text) => {
     if (!text) return '';
     const idx = text.indexOf('.');
     return idx !== -1 ? text.substring(0, idx + 1) : text;
   };
 
+  const dynamicGradient = getThemeGradient(currentTheme, colors);
+  const dynamicTextGradient = getThemeTextGradient(currentTheme, colors);
+
   return (
     <section className="py-20 bg-gray-50 font-poppins">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${dynamicTextGradient}`}>
             Related Services
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -93,7 +101,12 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                 onClick={() => handleServiceClick(service)}
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 text-left w-full"
               >
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300">
+                <div 
+                  className={`bg-gradient-to-r ${dynamicGradient} rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300`}
+                  style={{
+                    background: colors?.primary ? `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` : undefined
+                  }}
+                >
                   <DynamicFAIcon className='white' iconClass={service.fas_fa_icon || ''} />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{service.service_name}</h3>

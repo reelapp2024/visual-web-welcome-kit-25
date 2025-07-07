@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -67,7 +66,11 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Original Junk Removal theme colors
+				// Dynamic theme colors
+				'theme-primary': 'var(--theme-primary)',
+				'theme-secondary': 'var(--theme-secondary)',
+				'theme-accent': 'var(--theme-accent)',
+				
 				brand: {
 					50: '#fff7ed',
 					100: '#ffedd5',
@@ -104,7 +107,6 @@ export default {
 					800: '#365314',
 					900: '#1a2e05',
 				},
-				// Tree Removal theme colors
 				forest: {
 					50: '#f0fdf4',
 					100: '#dcfce7',
@@ -129,7 +131,6 @@ export default {
 					800: '#854d0e',
 					900: '#713f12',
 				},
-				// Roofing Services theme colors
 				roofing: {
 					50: '#f8fafc',
 					100: '#f1f5f9',
@@ -154,7 +155,6 @@ export default {
 					800: '#92400e',
 					900: '#78350f',
 				},
-				// Pet Waste Removal theme colors
 				pet: {
 					50: '#fef7ee',
 					100: '#fdedd3',
