@@ -16,6 +16,7 @@ interface ColorContextType {
     success: string;
     warning: string;
     info: string;
+    button: string;
     gradient: string;
   };
   isLoading: boolean;
@@ -42,9 +43,24 @@ export const DynamicColorProvider: React.FC<DynamicColorProviderProps> = ({ chil
   // Apply CSS custom properties for dynamic colors
   useEffect(() => {
     if (!isLoading && colors) {
+      console.log('Applying colors to CSS custom properties:', colors);
       const root = document.documentElement;
       
-      // Convert hex to HSL for CSS variables
+      // Set CSS custom properties directly with hex values
+      root.style.setProperty('--primary', colors.primary);
+      root.style.setProperty('--secondary', colors.secondary);
+      root.style.setProperty('--accent', colors.accent);
+      root.style.setProperty('--background', colors.background);
+      root.style.setProperty('--foreground', colors.foreground);
+      root.style.setProperty('--muted', colors.muted);
+      root.style.setProperty('--border', colors.border);
+      root.style.setProperty('--destructive', colors.destructive);
+      root.style.setProperty('--button', colors.button);
+      root.style.setProperty('--success', colors.success);
+      root.style.setProperty('--warning', colors.warning);
+      root.style.setProperty('--info', colors.info);
+
+      // Convert hex to HSL for Tailwind CSS variables
       const hexToHsl = (hex: string) => {
         const r = parseInt(hex.slice(1, 3), 16) / 255;
         const g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -68,15 +84,12 @@ export const DynamicColorProvider: React.FC<DynamicColorProviderProps> = ({ chil
         return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
       };
 
-      // Set CSS custom properties
-      root.style.setProperty('--primary', hexToHsl(colors.primary));
-      root.style.setProperty('--secondary', hexToHsl(colors.secondary));
-      root.style.setProperty('--accent', hexToHsl(colors.accent));
-      root.style.setProperty('--background', hexToHsl(colors.background));
-      root.style.setProperty('--foreground', hexToHsl(colors.foreground));
-      root.style.setProperty('--muted', hexToHsl(colors.muted));
-      root.style.setProperty('--border', hexToHsl(colors.border));
-      root.style.setProperty('--destructive', hexToHsl(colors.destructive));
+      // Set Tailwind CSS custom properties (HSL format)
+      root.style.setProperty('--primary-hsl', hexToHsl(colors.primary));
+      root.style.setProperty('--secondary-hsl', hexToHsl(colors.secondary));
+      root.style.setProperty('--accent-hsl', hexToHsl(colors.accent));
+      
+      console.log('CSS custom properties applied successfully');
     }
   }, [colors, isLoading]);
 
