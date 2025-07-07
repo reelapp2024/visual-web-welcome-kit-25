@@ -107,6 +107,9 @@ console.log('Second last segment (country):', Country);
 
     // log the startFrom value
   };
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
 
   useEffect(() => {
     const fetchData = async () => {

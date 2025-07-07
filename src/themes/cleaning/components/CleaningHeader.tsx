@@ -127,8 +127,12 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                 e.currentTarget.style.boxShadow =
                   'inset -2px -2px 5px rgba(255,255,255,0.2), inset 2px 2px 5px rgba(0,0,0,0.2), 0 6px 15px rgba(0,0,0,0.15)';
               }}
+
             >
+            <Link to="/">
+
               <i className={`fas ${projectFasFA}`}></i>
+              </Link>
             </div>
 
             <Link to="/">

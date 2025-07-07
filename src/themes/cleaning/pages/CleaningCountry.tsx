@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { httpFile } from "../../../config.js";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { MapPin, Clock, Shield, Building } from 'lucide-react';
 import { Star, StarHalf, Quote } from "lucide-react";
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Phone } from 'lucide-react';
+import { Phone, Sparkles } from 'lucide-react';
+
 import { useSEO } from '../../../hooks/useSEO';
 
 interface Testimonial {
@@ -42,6 +43,8 @@ const CleaningCountry = () => {
   // Get slug from URL path
   const pathname = location.pathname;
   const slug = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [projectCategory, setProjectCategory] = useState("");
 
   const [pageType, setPageType] = useState('');
   const [projectLocations, setProjectLocations] = useState([]);
@@ -49,7 +52,6 @@ const CleaningCountry = () => {
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
   const [projectFaqs, setprojectFaqs] = useState([]);
-  const [projectCategory, setProjectCategory] = useState("");
   const [welcomeLine, setWelcomeLine] = useState("");
   const [showName, setShowName] = useState("");
   const [countryDescription, setCountryDescription] = useState("");
@@ -60,11 +62,80 @@ const CleaningCountry = () => {
   const [pageLocation, setPageLocation] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [locInfo, setLocInfo] = useState<{ name: string; lat: number; lng: number } | null>(null);
-
+  const [CTA, setCTA] = useState([]);
   const { seoData } = useSEO('/');
 
+const ctaSlotMap = {
+  country: {
+    slot1: 0, // first CTA
+    slot2: 2, // third CTA
+    slot3: 1, // second CTA
+    slot4: 4, // fifth CTA
+    slot5: 3  // fourth CTA
+  },
+  state: {
+    slot1: 3, // fourth CTA
+    slot2: 0, // first CTA
+    slot3: 1, // second CTA
+    slot4: 2, // third CTA
+    slot5: 4  // fifth CTA
+  },
+  city: {
+    slot1: 1, // second CTA
+    slot2: 2, // third CTA
+    slot3: 0, // first CTA
+    slot4: 3, // fourth CTA
+    slot5: 4  // fifth CTA
+  },
+  local_area: {
+    slot1: 1, // second CTA
+    slot2: 3, // fourth CTA
+    slot3: 2, // third CTA
+    slot4: 0, // first CTA
+    slot5: 4  // fifth CTA
+  }
+};
 
-const projectId = import.meta.env.VITE_PROJECT_ID;
+
+const renderCTA = (CTA, pageType, slot, phoneNumber, projectCategory) => {
+  const slotMap = ctaSlotMap[pageType] || {};
+  const index = slotMap[slot];
+
+  if (CTA.length === 0) return null;
+  const cta = CTA[index] || CTA[0];
+
+  return (
+    <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          {cta.title}
+        </h2>
+        <p className="text-xl mb-8 max-w-3xl mx-auto text-green-100">
+          {cta.description}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a
+            href={`tel:${phoneNumber}`}
+            className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+          >
+            <Phone size={24} className="group-hover:animate-pulse" />
+            <span>Call Now: {phoneNumber}</span>
+          </a>
+          <Link
+            to="/contact"
+            className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+          >
+            <Sparkles size={24} />
+            <span>Book Services of {projectCategory}</span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
   // Extract values from location state or URL
   let { id, UpcomingPage, nextPage, locationName, sortname, _id } = location.state || {};
@@ -116,6 +187,10 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
         return Flag;
     }
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
+
 
   // First API call to determine page type
   useEffect(() => {
@@ -182,7 +257,9 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
           setProjectReviews(data.testimonials || []);
           setprojectFaqs(data.faq || []);
           setPageLocation(data.RefLocation || '');
-          setShowName(data.showName)
+          setShowName(data.showName);
+          setPhoneNumber(data.aboutUs.phone);
+          setCTA(data.projectInfo.cta || []); // <-- store CTA here
           setIsLoading(false);
 
           if (data.projectInfo.descriptions) {
@@ -202,8 +279,8 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
           }
         }
 
-     
-       
+
+
       } catch (error) {
         console.error("Error fetching data:", error);
         setIsLoading(false);
@@ -282,10 +359,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
     fetchServices();
   }, [projectId]);
 
-  const handleCallNow = () => {
-    console.log('Call now clicked');
-  };
-
+  console.log(phoneNumber)
   if (isLoading) {
     return <CleaningLoader />;
   }
@@ -297,12 +371,12 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
   return (
     <HelmetProvider>
       <Helmet>
-              <title>{`${seoData?.meta_title} in ${locationName}`}</title>
+        <title>{`${seoData?.meta_title} in ${locationName}`}</title>
 
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
-      
+
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
 
@@ -333,26 +407,26 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                 </p>
 
                 {/* Call to Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-6 justify-center mb-8">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <a
-                    href="tel:5551234567"
-                    className="group bg-emerald-400 hover:bg-emerald-500 text-white font-semibold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
+                    href={`tel:${phoneNumber}`}
+                    className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
                   >
-                    <Phone className="w-5 h-5" />
-                    <span>Call Now</span>
+                    <Phone size={24} className="group-hover:animate-pulse" />
+                    <span>Call Now: {phoneNumber}</span>
                   </a>
-                  <button
-                    onClick={() => navigate('/contact')}
-                    className="group bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-semibold py-3 px-8 rounded-2xl shadow-lg border border-white/30 transition-all duration-300 flex items-center justify-center space-x-3"
+                  <Link
+                    to="/contact"
+                    className="group bg-emerald-500 hover:bg-emerald-400 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
                   >
-                    <Quote className="w-5 h-5" />
-                    <span>Free Quote</span>
-                  </button>
+                    <Sparkles size={24} />
+                    <span>Book Services of {projectCategory}</span>
+                  </Link>
                 </div>
 
                 <div className="flex items-center justify-center space-x-2">
                   <Clock className="w-6 h-6 text-emerald-400" />
-                 
+
                 </div>
               </div>
             ) : (
@@ -368,11 +442,11 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                 {/* Call to Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <a
-                    href="tel:5551234567"
+                    href={`tel:${phoneNumber}`}
                     className="group bg-emerald-400 hover:bg-emerald-500 text-white font-semibold py-3 px-8 rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
                   >
                     <Phone className="w-5 h-5" />
-                    <span>Call Now</span>
+                    <span>Call Now {phoneNumber}</span>
                   </a>
                   <button
                     onClick={() => navigate('/contact')}
@@ -398,7 +472,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
         )}
 
 
-        <CleaningCTA />
+   {renderCTA(CTA, pageType, 'slot1', phoneNumber, projectCategory)}
         <CleaningAboutUs />
 
         {/* Services Section */}
@@ -443,10 +517,10 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
           </div>
         </section>
 
-        <CleaningCTA />
+    {renderCTA(CTA, pageType, 'slot2', phoneNumber, projectCategory)}
         <CleaningWhyChooseUs />
         <CleaningProcess />
-        <CleaningCTA />
+{renderCTA(CTA, pageType, 'slot3', phoneNumber, projectCategory)}
         <CleaningGuarantee />
 
         {/* Testimonials Section */}
@@ -518,9 +592,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
             </div>
           </section>
         )}
-
-        <CleaningCTA />
-
+{renderCTA(CTA, pageType, 'slot4', phoneNumber, projectCategory)}
         {/* Service Areas Section */}
         <section className="py-20 bg-gray-50 font-poppins">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -611,7 +683,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
           </section>
         )}
 
-        <CleaningCTA />
+{renderCTA(CTA, pageType, 'slot5', phoneNumber, projectCategory)}
         <CleaningFooter />
       </div>
     </HelmetProvider>

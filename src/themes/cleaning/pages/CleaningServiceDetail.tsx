@@ -75,6 +75,9 @@ const CleaningServiceDetail = () => {
  
   displayServiceName = location.state?.locationName ? displayServiceName : removeDot(displayServiceName)
 
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
 
 
   useEffect(() => {
@@ -235,8 +238,13 @@ const CleaningServiceDetail = () => {
                   <span className="text-lg">{displayServiceDescription}</span>
                 </p>
                 <div className="flex items-center space-x-4">
-                  <Phone className="w-6 h-6 text-emerald-400" />
-                  <span className="text-lg">Call Now: {phoneNumber}</span>
+                   <a
+                                  href={`tel:${phoneNumber}`}
+                                  className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+                                >
+                                  <Phone size={24} className="group-hover:animate-pulse" />
+                                  <span>Call Now: {phoneNumber}</span>
+                                </a>
                 </div>
               </div>
               <div>

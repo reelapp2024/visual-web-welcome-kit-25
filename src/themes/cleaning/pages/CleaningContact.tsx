@@ -18,6 +18,9 @@ const CleaningContact = () => {
   const [image, setImage] = useState("");
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
 
   useEffect(() => {
     const fetchData = async () => {

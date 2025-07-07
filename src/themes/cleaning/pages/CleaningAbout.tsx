@@ -38,6 +38,9 @@ const CleaningAbout = () => {
   const [missionLine, setMissionLine] = useState('');
   const [visionSubHeadings, setVisionSubHeadings] = useState([]);
   const [visionLine, setVisionLine] = useState('');
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,6 +110,7 @@ const CleaningAbout = () => {
             </p>
           </div>
         </section>
+        
 
         <CleaningAboutUs />
          <section className="py-20 bg-white font-poppins">

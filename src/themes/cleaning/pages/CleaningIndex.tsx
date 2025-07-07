@@ -24,6 +24,9 @@ const CleaningIndex = () => {
   const projectId = import.meta.env.VITE_PROJECT_ID;
 
   console.log(projectId, "<<<<ProjectId")
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +53,7 @@ const CleaningIndex = () => {
   // Ensure there are at least 4 CTAs by reusing the first one if necessary
   const getCTAContent = (index) => {
     if (CTA.length === 0) {
-      return { title: "Default CTA", description: "Contact us for our services" };
+      return { title: "Request a Quote", description: "Contact us for our services" };
     }
     return CTA[index] || CTA[0];
   };
