@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,10 +20,20 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['@radix-ui/react-slot', '@radix-ui/react-toast']
+        }
+      }
+    }
   },
   optimizeDeps: {
     exclude: [
-      "lovable-tagger" // Add any additional problematic packages here
+      "lovable-tagger"
     ],
+    force: true
   },
 }));
