@@ -4,9 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from 'react-helmet-async';  // Import HelmetProvider
-
-console.log('App.tsx loaded - starting application');
+import { HelmetProvider } from 'react-helmet-async';
 
 // Dynamic Theme Components
 import ThemeIndex from "./components/ThemeIndex";
@@ -20,8 +18,6 @@ import ThemeCountry from "./components/ThemeCountry";
 import ThemeState from "./components/ThemeState";
 import ThemeCity from "./components/ThemeCity";
 
-console.log('Theme components imported successfully');
-
 // Legal Pages
 import StateDetail from "./pages/StateDetail";
 import CityDetail from "./pages/CityDetail";
@@ -29,8 +25,6 @@ import TermsConditions from "./pages/TermsConditions";
 import Disclaimer from "./pages/Disclaimer";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
-
-console.log('Legal pages imported successfully');
 
 // Theme-specific legal pages
 import CleaningTermsConditions from "./themes/cleaning/pages/CleaningTermsConditions";
@@ -46,19 +40,13 @@ import PaintingPrivacyPolicy from "./themes/painting/pages/PaintingPrivacyPolicy
 
 import PlumbingMaps from "./themes/plumbing/pages/PlumbingMaps";
 
-console.log('Theme-specific legal pages imported successfully');
-
 const queryClient = new QueryClient();
 
 // Dynamic theme configuration - define the type properly
 export type ThemeType = 'cleaning' | 'plumbing' | 'roofing' | 'hvac' | 'painting';
 export const currentTheme: ThemeType = "cleaning";
 
-console.log('Current theme set to:', currentTheme);
-
 const App = () => {
-  console.log('App component rendering...');
-  
   return (
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
@@ -114,7 +102,5 @@ const App = () => {
     </QueryClientProvider>
   );
 };
-
-console.log('App component defined successfully');
 
 export default App;
