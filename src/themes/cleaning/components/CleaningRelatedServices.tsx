@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { httpFile } from "../../../config.js";
 import DynamicFAIcon from '../../../extras/DynamicFAIcon.js';
 import { useColors } from '../../../components/DynamicColorProvider';
-import { getThemeTextGradient, getThemeGradient } from '../../../utils/colorUtils.js';
-import { currentTheme } from '../../../App';
 
 const CleaningRelatedServices = () => {
   const navigate = useNavigate();
@@ -77,14 +75,39 @@ const CleaningRelatedServices = () => {
     return idx !== -1 ? text.substring(0, idx + 1) : text;
   };
 
-  const dynamicGradient = getThemeGradient(currentTheme, colors);
-  const dynamicTextGradient = getThemeTextGradient(currentTheme, colors);
+  // Helper function to check if color is gradient
+  const isGradient = (color) => {
+    return color && (color.includes('linear-gradient') || color.includes('radial-gradient'));
+  };
+
+  // Create dynamic styles based on API colors
+  const getDynamicIconStyle = () => {
+    if (!colors) return {};
+    
+    if (isGradient(colors.primary)) {
+      return { background: colors.primary };
+    } else {
+      return { 
+        background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` 
+      };
+    }
+  };
+
+  const getDynamicTextStyle = () => {
+    if (!colors) return '';
+    
+    if (isGradient(colors.primary)) {
+      return 'text-gradient-primary';
+    } else {
+      return 'text-primary-dynamic';
+    }
+  };
 
   return (
     <section className="py-20 bg-gray-50 font-poppins">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${dynamicTextGradient}`}>
+          <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${getDynamicTextStyle()}`}>
             Related Services
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -102,10 +125,8 @@ const CleaningRelatedServices = () => {
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 text-left w-full"
               >
                 <div 
-                  className={`bg-gradient-to-r ${dynamicGradient} rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300`}
-                  style={{
-                    background: colors?.primary ? `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` : undefined
-                  }}
+                  className="cleaning-service-icon rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300"
+                  style={getDynamicIconStyle()}
                 >
                   <DynamicFAIcon className='white' iconClass={service.fas_fa_icon || ''} />
                 </div>
