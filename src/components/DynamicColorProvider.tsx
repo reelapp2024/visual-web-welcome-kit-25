@@ -40,15 +40,73 @@ export const DynamicColorProvider: React.FC<DynamicColorProviderProps> = ({ chil
   const { siteSettings, isLoading, getThemeColors } = useSiteSettings();
   const colors = getThemeColors(currentTheme);
 
+  // Helper function to check if a color is a gradient
+  const isGradient = (color: string) => {
+    return color.includes('linear-gradient') || color.includes('radial-gradient');
+  };
+
+  // Helper function to extract hex color from gradient or return original color
+  const extractColorFromGradient = (color: string) => {
+    if (isGradient(color)) {
+      // Extract first hex color from gradient
+      const hexMatch = color.match(/#[0-9a-fA-F]{6}/);
+      return hexMatch ? hexMatch[0] : '#3B82F6'; // fallback to blue
+    }
+    return color;
+  };
+
+  // Convert hex to HSL for Tailwind CSS variables
+  const hexToHsl = (hex: string) => {
+    // Remove # if present
+    hex = hex.replace('#', '');
+    
+    const r = parseInt(hex.slice(0, 2), 16) / 255;
+    const g = parseInt(hex.slice(2, 4), 16) / 255;
+    const b = parseInt(hex.slice(4, 6), 16) / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+  };
+
   // Apply CSS custom properties for dynamic colors
   useEffect(() => {
     if (!isLoading && colors) {
       console.log('Applying colors to CSS custom properties:', colors);
       const root = document.documentElement;
       
-      // Set CSS custom properties directly with hex values
-      root.style.setProperty('--primary', colors.primary);
-      root.style.setProperty('--secondary', colors.secondary);
+      // Handle primary color (could be gradient or hex)
+      if (isGradient(colors.primary)) {
+        root.style.setProperty('--primary-gradient', colors.primary);
+        root.style.setProperty('--primary', extractColorFromGradient(colors.primary));
+      } else {
+        root.style.setProperty('--primary', colors.primary);
+        root.style.setProperty('--primary-gradient', colors.primary);
+      }
+
+      // Handle secondary color (could be gradient or hex)
+      if (isGradient(colors.secondary)) {
+        root.style.setProperty('--secondary-gradient', colors.secondary);
+        root.style.setProperty('--secondary', extractColorFromGradient(colors.secondary));
+      } else {
+        root.style.setProperty('--secondary', colors.secondary);
+        root.style.setProperty('--secondary-gradient', colors.secondary);
+      }
+
+      // Set other colors directly
       root.style.setProperty('--accent', colors.accent);
       root.style.setProperty('--background', colors.background);
       root.style.setProperty('--foreground', colors.foreground);
@@ -60,34 +118,18 @@ export const DynamicColorProvider: React.FC<DynamicColorProviderProps> = ({ chil
       root.style.setProperty('--warning', colors.warning);
       root.style.setProperty('--info', colors.info);
 
-      // Convert hex to HSL for Tailwind CSS variables
-      const hexToHsl = (hex: string) => {
-        const r = parseInt(hex.slice(1, 3), 16) / 255;
-        const g = parseInt(hex.slice(3, 5), 16) / 255;
-        const b = parseInt(hex.slice(5, 7), 16) / 255;
+      // Convert hex colors to HSL for Tailwind CSS variables
+      const primaryHex = extractColorFromGradient(colors.primary);
+      const secondaryHex = extractColorFromGradient(colors.secondary);
+      const accentHex = colors.accent;
 
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
-        let h = 0, s = 0, l = (max + min) / 2;
-
-        if (max !== min) {
-          const d = max - min;
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-          switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-          }
-          h /= 6;
-        }
-
-        return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
-      };
-
-      // Set Tailwind CSS custom properties (HSL format)
-      root.style.setProperty('--primary-hsl', hexToHsl(colors.primary));
-      root.style.setProperty('--secondary-hsl', hexToHsl(colors.secondary));
-      root.style.setProperty('--accent-hsl', hexToHsl(colors.accent));
+      root.style.setProperty('--primary-hsl', hexToHsl(primaryHex));
+      root.style.setProperty('--secondary-hsl', hexToHsl(secondaryHex));
+      root.style.setProperty('--accent-hsl', hexToHsl(accentHex));
+      root.style.setProperty('--background-hsl', hexToHsl(colors.background));
+      root.style.setProperty('--foreground-hsl', hexToHsl(colors.foreground));
+      root.style.setProperty('--muted-hsl', hexToHsl(colors.muted));
+      root.style.setProperty('--border-hsl', hexToHsl(colors.border));
       
       console.log('CSS custom properties applied successfully');
     }

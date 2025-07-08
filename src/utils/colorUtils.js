@@ -17,6 +17,11 @@ export const getThemeGradient = (theme, colors) => {
 };
 
 export const getThemeTextGradient = (theme, colors) => {
+  // Check if we have a CSS gradient for primary color
+  if (colors && colors.primary && colors.primary.includes('linear-gradient')) {
+    return 'text-gradient-primary';
+  }
+  
   const gradient = getThemeGradient(theme, colors);
   return `bg-gradient-to-r ${gradient} bg-clip-text text-transparent`;
 };
@@ -26,7 +31,8 @@ export const getThemeButtonColors = (theme, colors) => {
     return {
       primary: colors.primary,
       secondary: colors.secondary,
-      accent: colors.accent
+      accent: colors.accent,
+      button: colors.button
     };
   }
   
@@ -35,27 +41,32 @@ export const getThemeButtonColors = (theme, colors) => {
     cleaning: {
       primary: '#10B981',
       secondary: '#059669',
-      accent: '#34D399'
+      accent: '#34D399',
+      button: '#10B981'
     },
     plumbing: {
       primary: '#3B82F6', 
       secondary: '#1E40AF',
-      accent: '#60A5FA'
+      accent: '#60A5FA',
+      button: '#3B82F6'
     },
     hvac: {
       primary: '#EA580C',
       secondary: '#DC2626', 
-      accent: '#F97316'
+      accent: '#F97316',
+      button: '#EA580C'
     },
     roofing: {
       primary: '#64748B',
       secondary: '#475569',
-      accent: '#94A3B8'
+      accent: '#94A3B8',
+      button: '#64748B'
     },
     painting: {
       primary: '#8B5CF6',
       secondary: '#EC4899',
-      accent: '#A855F7'
+      accent: '#A855F7',
+      button: '#8B5CF6'
     }
   };
   
@@ -68,7 +79,29 @@ export const applyDynamicColors = (element, colors, theme) => {
   const themeColors = getThemeButtonColors(theme, colors);
   
   // Apply inline styles for immediate color changes
-  element.style.setProperty('--theme-primary', themeColors.primary);
-  element.style.setProperty('--theme-secondary', themeColors.secondary);
-  element.style.setProperty('--theme-accent', themeColors.accent);
+  if (colors.primary && colors.primary.includes('linear-gradient')) {
+    element.style.setProperty('--theme-primary-gradient', colors.primary);
+    element.style.setProperty('--theme-primary', extractColorFromGradient(colors.primary));
+  } else {
+    element.style.setProperty('--theme-primary', colors.primary);
+  }
+  
+  if (colors.secondary && colors.secondary.includes('linear-gradient')) {
+    element.style.setProperty('--theme-secondary-gradient', colors.secondary);
+    element.style.setProperty('--theme-secondary', extractColorFromGradient(colors.secondary));
+  } else {
+    element.style.setProperty('--theme-secondary', colors.secondary);
+  }
+  
+  element.style.setProperty('--theme-accent', colors.accent);
+  element.style.setProperty('--theme-button', colors.button);
+};
+
+// Helper function to extract hex color from gradient
+const extractColorFromGradient = (color) => {
+  if (color && color.includes('linear-gradient')) {
+    const hexMatch = color.match(/#[0-9a-fA-F]{6}/);
+    return hexMatch ? hexMatch[0] : '#3B82F6';
+  }
+  return color;
 };

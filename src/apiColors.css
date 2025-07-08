@@ -1,6 +1,6 @@
 
 .button {
-  background-color: var(--button) !important;
+  background: var(--button) !important;
   color: white !important;
 }
 
@@ -18,33 +18,33 @@
 
 /* Dynamic gradient backgrounds */
 .bg-gradient-to-r.from-green-600.to-emerald-600 {
-  background-image: linear-gradient(to right, var(--primary), var(--secondary)) !important;
+  background: var(--primary-gradient) !important;
 }
 
 .bg-gradient-to-r.from-blue-600.to-cyan-600 {
-  background-image: linear-gradient(to right, var(--primary), var(--secondary)) !important;
+  background: var(--primary-gradient) !important;
 }
 
 .bg-gradient-to-r.from-orange-600.to-red-600 {
-  background-image: linear-gradient(to right, var(--primary), var(--secondary)) !important;
+  background: var(--primary-gradient) !important;
 }
 
 .bg-gradient-to-r.from-slate-600.to-gray-600 {
-  background-image: linear-gradient(to right, var(--primary), var(--secondary)) !important;
+  background: var(--primary-gradient) !important;
 }
 
 .bg-gradient-to-r.from-purple-600.to-pink-600 {
-  background-image: linear-gradient(to right, var(--primary), var(--secondary)) !important;
+  background: var(--primary-gradient) !important;
 }
 
 /* Dynamic button colors */
 .btn-primary {
-  background-color: var(--primary) !important;
+  background: var(--primary-gradient) !important;
   color: white !important;
 }
 
 .btn-secondary {
-  background-color: var(--secondary) !important;
+  background: var(--secondary-gradient) !important;
   color: white !important;
 }
 
@@ -64,4 +64,71 @@
 
 .text-accent-dynamic {
   color: var(--accent) !important;
+}
+
+/* Button hover effects */
+.btn-primary:hover {
+  filter: brightness(1.1) !important;
+}
+
+.btn-secondary:hover {
+  filter: brightness(1.1) !important;
+}
+
+.btn-accent:hover {
+  filter: brightness(1.1) !important;
+}
+
+/* Gradient text support */
+.text-gradient-primary {
+  background: var(--primary-gradient) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.text-gradient-secondary {
+  background: var(--secondary-gradient) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Override specific cleaning theme colors */
+.bg-gradient-to-r.from-green-600.to-emerald-600,
+.bg-gradient-to-br.from-green-600.to-emerald-600 {
+  background: var(--primary-gradient) !important;
+}
+
+.bg-green-600,
+.bg-green-500 {
+  background: var(--primary) !important;
+}
+
+.text-green-600,
+.text-green-500 {
+  color: var(--primary) !important;
+}
+
+.border-green-600,
+.border-green-500 {
+  border-color: var(--primary) !important;
+}
+
+.bg-emerald-600,
+.bg-emerald-500 {
+  background: var(--secondary) !important;
+}
+
+.text-emerald-600,
+.text-emerald-500 {
+  color: var(--secondary) !important;
+}
+
+/* Override gradient text classes */
+.bg-gradient-to-r.from-green-600.to-emerald-600.bg-clip-text.text-transparent {
+  background: var(--primary-gradient) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
