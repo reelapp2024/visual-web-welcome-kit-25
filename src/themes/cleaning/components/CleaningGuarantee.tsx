@@ -48,16 +48,16 @@ const CleaningGuarantee = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {guarantees.map((guarantee, index) => (
-            <div key={index} className="text-center group">
-              <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
+            <div key={index} className="text-center group h-full">
+              <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100 h-full flex flex-col">
                 <div
                   className={`bg-gradient-to-br ${guarantee.gradient || 'from-gray-400 to-gray-600'
-                    } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
+                    } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300 flex-shrink-0`}
                 >
                   <DynamicFAIcon iconClass={guarantee.iconClass || ''} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{guarantee.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{guarantee.description}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex-shrink-0">{guarantee.title}</h3>
+                <p className="text-gray-600 leading-relaxed flex-grow">{guarantee.description}</p>
               </div>
             </div>
           ))}
