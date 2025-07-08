@@ -56,14 +56,14 @@ const CleaningValues = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {values.map((value, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 p-8 border border-gray-100">
-              <div className={`${value.color} mb-6 flex justify-center`}>
+            <div key={index} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 p-8 border border-gray-100 h-full flex flex-col">
+              <div className={`${value.color} mb-6 flex justify-center flex-shrink-0`}>
                 <div className="bg-gray-50 rounded-full p-4">
                   {value.icon}
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">{value.title}</h3>
-              <p className="text-gray-600 leading-relaxed text-center">{value.description}</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center flex-shrink-0">{value.title}</h3>
+              <p className="text-gray-600 leading-relaxed text-center flex-grow">{value.description}</p>
             </div>
           ))}
         </div>

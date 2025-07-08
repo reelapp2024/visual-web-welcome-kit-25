@@ -6,13 +6,13 @@ interface Testimonial {
   review_text: string;
   customer_image: string;
   customer_name: string;
-  rating: number | string; // could be 4.5, "3.5", etc.
+  rating: number | string;
 }
 
 const CleaningTestimonials: React.FC = () => {
   const [projectReviews, setProjectReviews] = useState<Testimonial[]>([]);
 
- const projectId = import.meta.env.VITE_PROJECT_ID;
+  const projectId = import.meta.env.VITE_PROJECT_ID;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,22 +60,17 @@ const CleaningTestimonials: React.FC = () => {
             return (
               <div
                 key={index}
-                className="bg-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100"
+                className="bg-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 h-full flex flex-col"
               >
-                <div className="mb-6">
-                  <Quote className="w-10 h-10 text-green-500 mb-4" />
+                <div className="mb-6 flex-grow">
+                  <Quote className="w-10 h-10 text-green-500 mb-4 flex-shrink-0" />
                   <p className="text-gray-700 leading-relaxed text-lg">
                     "{testimonial.review_text}"
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-shrink-0">
                   <div className="flex items-center space-x-4">
-                    {/* <img
-                      src={testimonial.customer_image}
-                      alt=""
-                      className="w-12 h-12 rounded-full object-cover"
-                    /> */}
                     <div>
                       <h4 className="font-bold text-gray-900">
                         {testimonial.customer_name}

@@ -122,16 +122,16 @@ const CleaningRelatedServices = () => {
               <button
                 key={index}
                 onClick={() => handleServiceClick(service)}
-                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 text-left w-full"
+                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 text-left w-full h-full flex flex-col"
               >
                 <div 
-                  className="cleaning-service-icon rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300"
+                  className="cleaning-service-icon rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300 flex-shrink-0"
                   style={getDynamicIconStyle()}
                 >
                   <DynamicFAIcon className='white' iconClass={service.fas_fa_icon || ''} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{service.service_name}</h3>
-                <p className="text-gray-600">{shortDesc}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-3 flex-shrink-0">{service.service_name}</h3>
+                <p className="text-gray-600 flex-grow">{shortDesc}</p>
               </button>
             );
           })}

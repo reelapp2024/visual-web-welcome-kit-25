@@ -75,10 +75,10 @@ const Services = () => {
           {services.map((service, index) => (
             <div 
               key={index} 
-              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden transform hover:-translate-y-2 cursor-pointer"
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden transform hover:-translate-y-2 cursor-pointer h-full flex flex-col"
               onClick={() => handleServiceClick(service.slug)}
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-48 overflow-hidden flex-shrink-0">
                 <img 
                   src={service.image} 
                   alt={service.title}
@@ -90,10 +90,10 @@ const Services = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">{service.description}</p>
-                <button className="flex items-center justify-center w-full bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white px-6 py-3 rounded-full font-bold text-lg transition-all duration-300 transform group-hover:scale-105 shadow-lg">
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex-shrink-0">{service.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 flex-grow">{service.description}</p>
+                <button className="flex items-center justify-center w-full bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white px-6 py-3 rounded-full font-bold text-lg transition-all duration-300 transform group-hover:scale-105 shadow-lg flex-shrink-0">
                   <Phone className="w-5 h-5 mr-2" />
                   Call Now: (555) 123-4567
                 </button>

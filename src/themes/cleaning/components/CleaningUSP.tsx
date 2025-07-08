@@ -56,12 +56,12 @@ const CleaningUSP = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {usps.map((usp, index) => (
-            <div key={index} className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100">
-              <div className={`bg-gradient-to-br ${usp.gradient} rounded-2xl w-20 h-20 flex items-center justify-center mb-6 text-white shadow-xl group-hover:scale-110 transition-all duration-300`}>
+            <div key={index} className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 h-full flex flex-col">
+              <div className={`bg-gradient-to-br ${usp.gradient} rounded-2xl w-20 h-20 flex items-center justify-center mb-6 text-white shadow-xl group-hover:scale-110 transition-all duration-300 flex-shrink-0`}>
                 {usp.icon}
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">{usp.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{usp.description}</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 flex-shrink-0">{usp.title}</h3>
+              <p className="text-gray-600 leading-relaxed flex-grow">{usp.description}</p>
             </div>
           ))}
         </div>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { httpFile } from "../../../config.js";
@@ -79,9 +80,9 @@ const CleaningServices = () => {
                   serviceImage1: service.images[1]?.url || "https://img.free-photo/standard-quality-control-concept-m_23-2150041850.jpg",
                   serviceImage2: service.images[2]?.url || "https://img.free-photo/standard-quality-control-concept-m_23-2150041850.jpg"
                 }}
-                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 overflow-hidden border border-gray-100 cursor-pointer"
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 overflow-hidden border border-gray-100 cursor-pointer h-full flex flex-col"
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-48 overflow-hidden flex-shrink-0">
                   <img
                     src={service.images[0]?.url || "https://img.freepik.com/free-photo/standard-quality-control-concept-m_23-2150041850.jpg"}
                     alt={service.service_name}
@@ -92,9 +93,9 @@ const CleaningServices = () => {
                     <i className={service.fas_fa_icon} />
                   </div>
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.service_name}</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{shortDesc}</p>
+                <div className="p-8 flex flex-col flex-grow">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 flex-shrink-0">{service.service_name}</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed flex-grow">{shortDesc}</p>
                 </div>
               </Link>
             );
