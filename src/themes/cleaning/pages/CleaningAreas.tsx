@@ -8,6 +8,9 @@ import CleaningServiceAreas from '../components/CleaningServiceAreas';
 import ServiceMap from '../../../components/ServiceMap';
 import CleaningFooter from '../components/CleaningFooter';
 import { MapPin } from 'lucide-react';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CleaningAreas = () => {
   const { seoData } = useSEO('/areas');
@@ -48,6 +51,28 @@ const CleaningAreas = () => {
       
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
+
+        {/* Breadcrumb */}
+        <div className="bg-gray-50 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/" className="flex items-center">
+                      <Home className="w-4 h-4 mr-1" />
+                      Home
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Areas We Serve</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </div>
 
         {/* Areas Hero */}
         <section className="relative py-20 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden min-h-[500px] flex items-center">

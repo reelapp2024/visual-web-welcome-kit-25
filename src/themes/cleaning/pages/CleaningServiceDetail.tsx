@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -24,6 +23,8 @@ import { Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { slugify } from "../../../extras/slug";
 import { useSEO } from '../../../hooks/useSEO';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
+import { Home } from 'lucide-react';
 
 const CleaningServiceDetail = () => {
   let { serviceName: urlServiceName } = useParams();
@@ -222,6 +223,34 @@ useEffect(() => {
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
 
+        {/* Breadcrumb */}
+        <div className="bg-gray-50 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/" className="flex items-center">
+                      <Home className="w-4 h-4 mr-1" />
+                      Home
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/services">Services</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{displayServiceName} {locationName}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </div>
+
         <section className="relative py-20 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden min-h-[600px] flex items-center">
           <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${ProjectBaseImage})` }}></div>
           <div className="absolute inset-0 bg-gradient-to-br from-green-600/85 to-emerald-600/85"></div>
@@ -343,8 +372,6 @@ useEffect(() => {
           </div>
         </section>
 
-        {/* CTA! */}
-
         {cta1 ? (
           <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -372,11 +399,7 @@ useEffect(() => {
               </div>
             </div>
           </section>
-        ) : null}  {/* This will render nothing if cta1 is not available */}
-
-
-
-        {/* <CleaningWhyChooseUs /> */}
+        ) : null}
 
         <section className="py-20 bg-white font-poppins">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -412,9 +435,6 @@ useEffect(() => {
             </div>
           </div>
         </section>
-
-
-        {/* Cleaning Gurantee */}
 
         <section className="py-20 bg-gradient-to-br from-green-50 to-emerald-50 font-poppins">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -455,7 +475,6 @@ useEffect(() => {
             </div>
           </div>
         </section>
-        {/* CTA! */}
 
         {cta2 ? (
           <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-poppins">
@@ -484,11 +503,10 @@ useEffect(() => {
               </div>
             </div>
           </section>
-        ) : null}  {/* This will render nothing if cta1 is not available */}
+        ) : null}
 
         <CleaningRelatedServices />
 
-          {/* FAQ Section */}
         {projectFaqs.length > 0 && (
           <section className="py-20 bg-white font-poppins">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -526,7 +544,6 @@ useEffect(() => {
             </div>
           </section>
         )}
-        {/* <CleaningServiceAreas /> */}
         <CleaningFooter />
       </div>
     </HelmetProvider>
