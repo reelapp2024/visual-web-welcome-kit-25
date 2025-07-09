@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { httpFile } from "../../../config";
@@ -111,7 +112,7 @@ const CleaningState = () => {
       <CleaningProcess />
       <CleaningCTA />
       <CleaningServiceAreas />
-      <CleaningStateMap />
+      <CleaningStateMap stateName={displayStateName} countryName="United States" />
       <CleaningFAQ />
       <CleaningCTA />
       <CleaningFooter />
