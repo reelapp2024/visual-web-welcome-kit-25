@@ -312,33 +312,34 @@ useEffect(() => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-              {stepProcess.length > 0 ? (
-                stepProcess.map((step, index) => (
-                  <div key={index} className="text-center relative group">
-                    <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-xl z-10 shadow-xl group-hover:scale-110 transition-all duration-300">
-                      {index + 1}
-                    </div>
-                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-                      <div className={`bg-gradient-to-br ${step.gradient || 'from-gray-400 to-gray-600'} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}>
-                        <i className={`${step.iconClass || 'fas fa-star'} text-4xl text-green-500`}></i>
-                      </div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.stepName || 'Step'}</h3>
-                      <p className="text-gray-600 leading-relaxed">{step.serviceDescription || 'No description available.'}</p>
-                    </div>
-                    {index < stepProcess.length - 1 && (
-                      <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-green-300 z-20">
-                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-gray-600 col-span-4">No process steps available.</p>
-              )}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+  {stepProcess.length > 0 ? (
+    stepProcess.map((step, index) => (
+      <div key={index} className="text-center relative group flex flex-col h-full">
+        <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-xl z-10 shadow-xl group-hover:scale-110 transition-all duration-300">
+          {index + 1}
+        </div>
+        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100 flex flex-col justify-between h-full overflow-hidden">
+          <div className={`bg-gradient-to-br ${step.gradient || 'from-gray-400 to-gray-600'} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}>
+            <i className={`${step.iconClass || 'fas fa-star'} text-4xl text-green-500`}></i>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.stepName || 'Step'}</h3>
+          <p className="text-gray-600 leading-relaxed flex-grow overflow-auto">{step.serviceDescription || 'No description available.'}</p>
+        </div>
+        {index < stepProcess.length - 1 && (
+          <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-green-300 z-20">
+            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+            </svg>
+          </div>
+        )}
+      </div>
+    ))
+  ) : (
+    <p className="text-center text-gray-600 col-span-4">No process steps available.</p>
+  )}
+</div>
+
           </div>
         </section>
 
