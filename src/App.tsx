@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { DynamicColorProvider } from "./components/DynamicColorProvider";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Dynamic Theme Components
 import ThemeIndex from "./components/ThemeIndex";
@@ -55,14 +56,24 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               {/* Main Theme Routes */}
               <Route path="/" element={<ThemeIndex />} />
               <Route path="/about" element={<ThemeAbout />} />
               <Route path="/services" element={<ThemeServices />} />
+               <Route path="/:countryname/services" element={<ThemeServices />} />
+              <Route path="/:countryname/:statename/services" element={<ThemeServices />} />
+              <Route path="/:countryname/:statename/:cityname/services" element={<ThemeServices />} />
+              <Route path="/:countryname/:statename/:cityname/:localareaname/services" element={<ThemeServices />} />
+          
               <Route path="/contact" element={<ThemeContact />} />
               <Route path="/services/:serviceName" element={<ThemeServiceDetail />} />
-              <Route path="/:locationName/services/:serviceName" element={<ThemeServiceDetail />} />
+              <Route path="/:countryname/services/:serviceName" element={<ThemeServiceDetail />} />
+              <Route path="/:countryname/:statename/services/:serviceName" element={<ThemeServiceDetail />} />
+              <Route path="/:countryname/:statename/:cityname/services/:serviceName" element={<ThemeServiceDetail />} />
+              <Route path="/:countryname/:statename/:cityname/:localareaname/services/:serviceName" element={<ThemeServiceDetail />} />
+          
               <Route path="/areas" element={<ThemeAreas />} />
               <Route path="/areas/:slug" element={<ThemeAreaDetail />} />
               <Route path="/:slug" element={<ThemeCountry />} />

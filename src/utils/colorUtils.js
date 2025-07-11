@@ -40,7 +40,7 @@ export const getThemeButtonColors = (theme, colors) => {
   const buttonColors = {
     cleaning: {
       primary: '#10B981',
-      secondary: '#059669',
+      secondary: '#3B82F6',
       accent: '#34D399',
       button: '#10B981'
     },

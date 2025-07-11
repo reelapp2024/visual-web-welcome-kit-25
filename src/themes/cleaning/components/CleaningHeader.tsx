@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Phone, Menu, X, ChevronDown } from 'lucide-react';
 import { useHeaderData } from '../../../hooks/useHeaderData.js';
 import { httpFile } from "../../../config.js";
+import { getProjectId } from '../../../hooks/getProjectId';
 
 const CleaningHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +20,14 @@ const CleaningHeader = () => {
     isLoading
   } = useHeaderData();
 
-const projectId = import.meta.env.VITE_PROJECT_ID;
+  const [projectId, setProjectId] = useState(null);
+
+  useEffect(() => {
+    const id = getProjectId();
+    console.log(id, "this is id");
+    setProjectId(id);
+  }, []);
+
   useEffect(() => {
     const fetchHeaderData = async () => {
       try {
@@ -41,7 +48,9 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
       }
     };
 
-    fetchHeaderData();
+    if (projectId) {
+      fetchHeaderData();
+    }
   }, [projectId]);
 
   const navigationItems = [
@@ -127,11 +136,9 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                 e.currentTarget.style.boxShadow =
                   'inset -2px -2px 5px rgba(255,255,255,0.2), inset 2px 2px 5px rgba(0,0,0,0.2), 0 6px 15px rgba(0,0,0,0.15)';
               }}
-
             >
-            <Link to="/">
-
-              <i className={`fas ${projectFasFA}`}></i>
+              <Link to="/">
+                <i className={`fas ${projectFasFA}`}></i>
               </Link>
             </div>
 
@@ -160,17 +167,19 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                     {/* Services Dropdown */}
                     {item.name === 'Services' && (
                       <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                        {services.map((service) => (
-                          <button
+                        {services.slice(0, 5).map((service) => (
+                          <Link
                             key={service._id}
+                            to={`/services/${service.service_name.toLowerCase().replace(/\s+/g, '-')}`}
                             onClick={() => handleServiceClick(service)}
+                            onContextMenu={(e) => e.stopPropagation()}
                             className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200"
                           >
                             <div className="flex items-center">
                               <i className={`${service.fas_fa_icon} text-green-500 mr-3`}></i>
                               <span>{service.service_name}</span>
                             </div>
-                          </button>
+                          </Link>
                         ))}
                         <div className="border-t border-gray-100 mt-2 pt-2">
                           <Link
@@ -186,14 +195,16 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                     {/* Areas Dropdown */}
                     {item.name === 'Areas' && (
                       <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                        {locations.map((location) => (
-                          <button
+                        {locations.slice(0, 5).map((location) => (
+                          <Link
                             key={location.location_id}
+                            to={`/${location.slug}`}
                             onClick={() => handleAreaClick(location)}
+                            onContextMenu={(e) => e.stopPropagation()}
                             className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200"
                           >
                             {location.name}
-                          </button>
+                          </Link>
                         ))}
                         <div className="border-t border-gray-100 mt-2 pt-2">
                           <Link
@@ -255,39 +266,57 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
                   {/* Mobile Services */}
                   {item.name === 'Services' && (
                     <div className="pl-4 mt-2 space-y-2">
-                      {services.map((service) => (
-                        <button
+                      {services.slice(0, 5).map((service) => (
+                        <Link
                           key={service._id}
+                          to={`/services/${service.service_name.toLowerCase().replace(/\s+/g, '-')}`}
                           onClick={() => {
                             handleServiceClick(service);
                             setIsMenuOpen(false);
                           }}
+                          onContextMenu={(e) => e.stopPropagation()}
                           className="block w-full text-left py-2 text-sm text-gray-600 hover:text-green-600 transition-colors duration-200"
                         >
                           <div className="flex items-center">
                             <i className={`${service.fas_fa_icon} text-green-500 mr-2 text-xs`}></i>
                             <span>{service.service_name}</span>
                           </div>
-                        </button>
+                        </Link>
                       ))}
+                      <Link
+                        to="/services"
+                        className="block w-full text-left py-2 text-sm text-green-600 font-semibold hover:bg-green-50 transition-colors duration-200"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        View All Services
+                      </Link>
                     </div>
                   )}
 
                   {/* Mobile Areas */}
                   {item.name === 'Areas' && (
                     <div className="pl-4 mt-2 space-y-2">
-                      {locations.map((location) => (
-                        <button
+                      {locations.slice(0, 5).map((location) => (
+                        <Link
                           key={location.location_id}
+                          to={`/${location.slug}`}
                           onClick={() => {
                             handleAreaClick(location);
                             setIsMenuOpen(false);
                           }}
+                          onContextMenu={(e) => e.stopPropagation()}
                           className="block w-full text-left py-2 text-sm text-gray-600 hover:text-green-600 transition-colors duration-200"
                         >
                           {location.name}
-                        </button>
+                        </Link>
                       ))}
+                      <Link
+                        to="/areas"
+                        className="block w-full text-left py-2 text-sm text-green-600 font-semibold hover:bg-green-50 transition-colors duration-200"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        View All Areas
+                      </Link>
                     </div>
                   )}
                 </div>

@@ -33,8 +33,8 @@ const CleaningServiceDetail = () => {
   const [serviceImage, setServiceImage] = useState("");
   const [ProjectBaseImage, setProjectBaseImage] = useState("");
   const [stepProcess, setStepProcess] = useState([]);
-    const [openFAQ, setOpenFAQ] = useState<number | null>(null);
-  
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [reloadFlag, setReloadFlag] = useState(0);
@@ -42,8 +42,8 @@ const CleaningServiceDetail = () => {
   const [subServices, setSubServices] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
- const projectId = import.meta.env.VITE_PROJECT_ID;
-  const locationName = location.state?.locationName ? `in ${location.state.locationName}` : '';
+  const projectId = import.meta.env.VITE_PROJECT_ID;
+ 
   const [serviceId, setServiceId] = useState(location.state?.serviceId || "");
   let displayServiceName = humanizeString(urlServiceName) || 'Residential Cleaning';
   const [guarantees, setGuarantees] = useState([]);
@@ -51,6 +51,7 @@ const CleaningServiceDetail = () => {
   const [promiseLine, setPromiseLine] = useState("");
   const [projectCategory, setProjectCategory] = useState("");
   const [projectName, setprojectName] = useState("");
+  const [locationName, setDisplayLocationName] = useState("");
   const [cta1, setCta1] = useState(null);
   const [cta2, setCta2] = useState(null);
   const [cta3, setCta3] = useState(null);
@@ -64,19 +65,55 @@ const CleaningServiceDetail = () => {
   const serviceSlug = useMemo(() => {
     const segments = location.pathname.split('/');
     const idx = segments.findIndex(s => s === 'services');
-    return idx >= 0 && segments[idx+1] ? segments[idx+1] : '';
+    return idx >= 0 && segments[idx + 1] ? segments[idx + 1] : '';
   }, [location.pathname]);
 
-  console.log(slugify(serviceSlug),"serviceSlug<<<<<<>>>>>>>>>><<<<<<<<<<<<<>>>>>>>>>>>>>>>")
+  console.log(slugify(serviceSlug), "serviceSlug<<<<<<>>>>>>>>>><<<<<<<<<<<<<>>>>>>>>>>>>>>>");
 
+
+  const pathname = location.pathname;
+
+// Extract path before '/services/'
+const routeBeforeServices = pathname.split('/services/')[0];
+
+// Remove leading '/' if needed
+const locationSlug = routeBeforeServices.startsWith('/') ? routeBeforeServices.slice(1) : routeBeforeServices;
+
+  useEffect(() => {
+    const fetchPageType = async () => {
+      try {
+        const { data } = await httpFile.post("/webapp/v1/slugToPageType", {
+          projectId,
+          slug:locationSlug
+        });
+
+        console.log(data,"<<<<<>>>>>>>>data of slug")
+
+        if (data?.slugType) {
+          setDisplayLocationName(data.showName);
+        }
+
+        
+      } catch (error) {
+        console.error("Error fetching page type:", error);
+        
+      }
+    };
+
+
+
+    if (locationSlug) {
+      fetchPageType();
+    }
+  }, [locationSlug, projectId]);
   // now fetch your SEO data
   const { seoData } = useSEO(`/services/${slugify(serviceSlug)}`);
- 
 
- 
+
+
   displayServiceName = location.state?.locationName ? displayServiceName : removeDot(displayServiceName)
 
-useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]); // runs every time URL path changes
 
@@ -190,9 +227,9 @@ useEffect(() => {
     fetchData();
   }, [projectId]);
   const hasLocationName = Boolean(location.state?.locationName);
-  let inlocationName=''
-  if(hasLocationName){
-  inlocationName = `in ${location.state?.locationName}`;
+  let inlocationName = ''
+  if (hasLocationName) {
+    inlocationName = `in ${location.state?.locationName}`;
 
   }
   const rawDescription = serviceDetails?.service_description || "";
@@ -215,7 +252,7 @@ useEffect(() => {
 
     <HelmetProvider>
       <Helmet>
-      <title>{`${seoData?.meta_title} ${locationName}`}</title>
+        <title>{`${seoData?.meta_title} ${locationName}`}</title>
 
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
@@ -226,28 +263,58 @@ useEffect(() => {
         {/* Breadcrumb */}
         <div className="bg-gray-50 py-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to="/" className="flex items-center">
-                      <Home className="w-4 h-4 mr-1" />
-                      Home
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
+          <div className="bg-gray-50 py-4">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <Breadcrumb>
+      <BreadcrumbList>
+        {/* Home */}
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link to="/" className="flex items-center">
+              <Home className="w-4 h-4 mr-1" />
+              Home
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+
+        {/* Dynamic segments */}
+        {(() => {
+          const segments = location.pathname.split('/').filter(Boolean); // remove empty strings
+
+          // Build cumulative URLs for each segment
+          let cumulativePath = '';
+          return segments.map((segment, index) => {
+            cumulativePath += `/${segment}`;
+            const isLast = index === segments.length - 1;
+
+            // Display: humanize string, unless it's 'services' (capitalize)
+            const displayName = segment === 'services'
+              ? 'Services'
+              : humanizeString(segment);
+
+            return (
+              <React.Fragment key={index}>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link to="/services">Services</Link>
-                  </BreadcrumbLink>
+                  {isLast ? (
+                    <BreadcrumbPage className="font-medium text-green-600">
+                      {displayName}
+                    </BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink asChild>
+                      <Link to={cumulativePath}>{displayName}</Link>
+                    </BreadcrumbLink>
+                  )}
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{displayServiceName} {locationName}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+              </React.Fragment>
+            );
+          });
+        })()}
+      </BreadcrumbList>
+    </Breadcrumb>
+  </div>
+</div>
+
           </div>
         </div>
 
@@ -267,13 +334,13 @@ useEffect(() => {
                   <span className="text-lg">{displayServiceDescription}</span>
                 </p>
                 <div className="flex items-center space-x-4">
-                   <a
-                                  href={`tel:${phoneNumber}`}
-                                  className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
-                                >
-                                  <Phone size={24} className="group-hover:animate-pulse" />
-                                  <span>Call Now: {phoneNumber}</span>
-                                </a>
+                  <a
+                    href={`tel:${phoneNumber}`}
+                    className="group bg-white text-green-600 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 flex items-center space-x-3 w-full sm:w-auto justify-center shadow-xl transform hover:scale-105"
+                  >
+                    <Phone size={24} className="group-hover:animate-pulse" />
+                    <span>Call Now: {phoneNumber}</span>
+                  </a>
                 </div>
               </div>
               <div>
@@ -286,8 +353,8 @@ useEffect(() => {
         {/* ==== NEW "ABOUT" SECTION ==== */}
         {aboutService && (
           <section className="py-16 bg-white font-poppins">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-4xl font-bold mb-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="text-4xl font-bold mb-6 text-green-600">
                 About {displayServiceName}
               </h2>
               <p className="text-lg text-gray-700 leading-relaxed">
@@ -337,37 +404,37 @@ useEffect(() => {
                 Our Simple {displayServiceName} Process {inlocationName}
               </h2>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                Our streamlined 4-step {displayServiceName} process ensures you get professional {projectCategory} service from start to finish.
+                Our streamlined {stepProcess.length}-step {displayServiceName} process ensures you get professional {projectCategory} service from start to finish.
               </p>
             </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-  {stepProcess.length > 0 ? (
-    stepProcess.map((step, index) => (
-      <div key={index} className="text-center relative group flex flex-col h-full">
-        <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-xl z-10 shadow-xl group-hover:scale-110 transition-all duration-300">
-          {index + 1}
-        </div>
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100 flex flex-col justify-between h-full overflow-hidden">
-          <div className={`bg-gradient-to-br ${step.gradient || 'from-gray-400 to-gray-600'} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}>
-            <i className={`${step.iconClass || 'fas fa-star'} text-4xl text-green-500`}></i>
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.stepName || 'Step'}</h3>
-          <p className="text-gray-600 leading-relaxed flex-grow overflow-auto">{step.serviceDescription || 'No description available.'}</p>
-        </div>
-        {index < stepProcess.length - 1 && (
-          <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-green-300 z-20">
-            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-            </svg>
-          </div>
-        )}
-      </div>
-    ))
-  ) : (
-    <p className="text-center text-gray-600 col-span-4">No process steps available.</p>
-  )}
-</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+              {stepProcess.length > 0 ? (
+                stepProcess.map((step, index) => (
+                  <div key={index} className="text-center relative group flex flex-col h-full">
+                    <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center font-bold text-xl z-10 shadow-xl group-hover:scale-110 transition-all duration-300">
+                      {index + 1}
+                    </div>
+                    <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100 flex flex-col justify-between h-full overflow-hidden">
+                      <div className={`bg-gradient-to-br ${step.gradient || 'from-gray-400 to-gray-600'} rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}>
+                        <i className={`${step.iconClass || 'fas fa-star'} text-4xl text-green-500`}></i>
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.stepName || 'Step'}</h3>
+                      <p className="text-gray-600 leading-relaxed flex-grow overflow-auto">{step.serviceDescription || 'No description available.'}</p>
+                    </div>
+                    {index < stepProcess.length - 1 && (
+                      <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 text-green-300 z-20">
+                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-600 col-span-4">No process steps available.</p>
+              )}
+            </div>
 
           </div>
         </section>
@@ -446,24 +513,22 @@ useEffect(() => {
                 {guaranteeText}
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {guarantees.map((guarantee, index) => (
-                <div key={index} className="text-center group">
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100">
-                    <div
-                      className={`bg-gradient-to-br ${guarantee.gradient || 'from-gray-400 to-gray-600'
-                        } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
-                    >
-                      <DynamicFAIcon iconClass={guarantee.iconClass || ''} />
-                      {/* Changed icon color to green-500 */}
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">{guarantee.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{guarantee.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+  {guarantees.map((guarantee, index) => (
+    <div key={index} className="text-center group flex"> {/* Added flex to ensure stretching */}
+      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 p-8 border border-gray-100 flex flex-col w-full min-h-[300px]"> {/* Added flex-col, w-full, min-h */}
+        <div
+          className={`bg-gradient-to-br ${guarantee.gradient || 'from-gray-400 to-gray-600'
+            } rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 shadow-xl group-hover:scale-110 transition-all duration-300`}
+        >
+          <DynamicFAIcon iconClass={guarantee.iconClass || ''} />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-4">{guarantee.title}</h3>
+        <p className="text-gray-600 leading-relaxed flex-grow">{guarantee.description}</p> {/* Added flex-grow to stretch content */}
+      </div>
+    </div>
+  ))}
+</div>
 
             <div className="text-center mt-12">
               <div className="bg-white rounded-xl p-8 shadow-xl max-w-4xl mx-auto border border-gray-100">

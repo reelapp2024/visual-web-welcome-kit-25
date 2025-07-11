@@ -28,7 +28,8 @@ const PaintingServiceDetail = ({ serviceId: propServiceId, serviceName, serviceD
   const [serviceId, setServiceId] = useState(propServiceId || "");
   
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+    const projectId = import.meta.env.VITE_PROJECT_ID;
+
   
   const displayServiceName = serviceName || humanizeString(urlServiceName) || 'Interior Painting';
   const displayServiceDescription = serviceDescription || serviceDetails?.service_description || 'Professional interior painting services for homes and businesses with premium paints and expert craftsmanship. Same-day estimates and satisfaction guaranteed.';

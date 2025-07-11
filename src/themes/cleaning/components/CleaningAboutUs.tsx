@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { httpFile } from '../../../config.js';
 import CleaningLoader from '../components/CleaningLoader';
 import DynamicIcon from '../../../extras/DynamicIcon.js';
+import { getProjectId } from '../../../hooks/getProjectId'; // Import the utility
 
 interface Stat {
   serialno: number;
@@ -29,7 +30,15 @@ const CleaningAboutUs: React.FC = () => {
   if (site && localStorage.getItem('currentSiteId') !== site) {
     localStorage.setItem('currentSiteId', site);
   }
-  const projectId = import.meta.env.VITE_PROJECT_ID;
+const [projectId, setProjectId] = useState(null); // Initialize as null
+
+useEffect(() => {
+    // Get projectId from utility function
+    const id = getProjectId();
+
+    console.log(id, "this is id")
+    setProjectId(id); // Set projectId in state
+  }, []);
   useEffect(() => {
     (async () => {
       try {

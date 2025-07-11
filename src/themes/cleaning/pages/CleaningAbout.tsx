@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation, Link, useParams } from "react-router-dom";
+
 import { httpFile } from "../../../config.js";
 import CleaningHeader from '../components/CleaningHeader';
 import CleaningCTA from '../components/CleaningCTA';
@@ -9,13 +11,19 @@ import CleaningFooter from '../components/CleaningFooter';
 import { Sparkles } from 'lucide-react';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
 import { Home } from 'lucide-react';
-import { Link } from 'react-router-dom';
+
 
 const CleaningAbout = () => {
+    const location = useLocation();
+  
   const [aboutHeroText, setAboutHeroText] = useState('');
   const [projectCategory, setProjectCategory] = useState("");
-  
+  const [heroImage, setHeroImage] = useState("");
+
   const projectId = import.meta.env.VITE_PROJECT_ID;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +37,8 @@ const CleaningAbout = () => {
         if (data.projectInfo && data.projectInfo.aboutHeroText) {
           setAboutHeroText(data.projectInfo.aboutHeroText);
           setProjectCategory(data.projectInfo.serviceType);
+          setHeroImage(data.projectInfo.images[0].url);
+
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -41,9 +51,9 @@ const CleaningAbout = () => {
   return (
     <div className="min-h-screen font-poppins">
       <CleaningHeader />
-      
+
       {/* Breadcrumb */}
-      <div className="bg-gray-50 py-4">
+      <div className="bg-gray-50 py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb>
             <BreadcrumbList>
@@ -57,7 +67,7 @@ const CleaningAbout = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>About Us</BreadcrumbPage>
+                <BreadcrumbPage className="font-medium text-green-600">About Us</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -66,11 +76,12 @@ const CleaningAbout = () => {
 
       {/* About Hero */}
       <section className="relative py-20 bg-gradient-to-br from-green-600 to-emerald-600 text-white overflow-hidden min-h-[500px] flex items-center">
-        
+
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2126&q=80)',
+            backgroundImage: `url(${heroImage})`,
+
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}

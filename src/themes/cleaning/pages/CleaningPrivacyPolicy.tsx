@@ -79,7 +79,7 @@ useEffect(() => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Privacy Policy</BreadcrumbPage>
+                  <BreadcrumbPage className="font-medium text-green-600">Privacy Policy</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>

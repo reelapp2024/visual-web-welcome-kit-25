@@ -10,36 +10,47 @@ import CleaningFooter from '../components/CleaningFooter';
 import { MapPin } from 'lucide-react';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '../../../components/ui/breadcrumb';
 import { Home } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const CleaningAreas = () => {
+  const location = useLocation();
+
   const { seoData } = useSEO('/areas');
   const [aboutHeroText, setAboutHeroText] = useState('');
-    const [projectCategory, setProjectCategory] = useState("");
-  
-    const projectId = import.meta.env.VITE_PROJECT_ID;
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          // Fetch hero text from my_site API
-          const { data } = await httpFile.post("/webapp/v1/my_site", {
-            projectId,
-            pageType: "home",
-          });
-  
-          if (data.projectInfo && data.projectInfo.aboutHeroText) {
-            setAboutHeroText(data.projectInfo.aboutHeroText);
-          setProjectCategory(data.projectInfo.serviceType);
+  const [projectCategory, setProjectCategory] = useState("");
+  const [heroImage, setHeroImage] = useState("");
 
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
+
+  const projectId = import.meta.env.VITE_PROJECT_ID;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]); // runs every time URL path changes
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch hero text from my_site API
+        const { data } = await httpFile.post("/webapp/v1/my_site", {
+          projectId,
+          pageType: "home",
+        });
+
+        if (data.projectInfo && data.projectInfo.aboutHeroText) {
+          setAboutHeroText(data.projectInfo.aboutHeroText);
+          setProjectCategory(data.projectInfo.serviceType);
+          setHeroImage(data.projectInfo.images[4].url);
+
+
+
         }
-      };
-  
-      fetchData();
-    }, [projectId]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [projectId]);
 
   return (
     <HelmetProvider>
@@ -48,7 +59,7 @@ const CleaningAreas = () => {
         <meta name="description" content={seoData.meta_description} />
         <meta name="keywords" content={seoData.meta_keywords} />
       </Helmet>
-      
+
       <div className="min-h-screen font-poppins">
         <CleaningHeader />
 
@@ -67,7 +78,7 @@ const CleaningAreas = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Areas We Serve</BreadcrumbPage>
+                  <BreadcrumbPage className="font-medium text-green-600">Areas We Serve</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -79,7 +90,8 @@ const CleaningAreas = () => {
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: 'url(https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2126&q=80)',
+              backgroundImage: `url(${heroImage})`,
+
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
@@ -98,7 +110,7 @@ const CleaningAreas = () => {
         </section>
 
         <CleaningServiceAreas />
-       
+
         <CleaningCTA />
         <CleaningFooter />
       </div>

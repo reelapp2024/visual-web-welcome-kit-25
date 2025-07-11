@@ -54,8 +54,8 @@ const CleaningFooter = () => {
             <ul className="space-y-3">
               {services.slice(0, 5).map((service, index) => (
                 <li key={index}>
-                  <Link 
-                    to={`/services/${service.service_name.toLowerCase().replace(/\s+/g, '-')}`} 
+                  <Link
+                    to={`/services/${service.service_name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="text-gray-300 hover:text-green-500 transition-colors"
                   >
                     {service.service_name}
@@ -93,6 +93,7 @@ const CleaningFooter = () => {
                   <span className="text-gray-300">{aboutUs.email}</span>
                 </div>
               )}
+
               {aboutUs.mainLocation && (
                 <div className="flex items-center">
                   <MapPin className="w-5 h-5 text-green-500 mr-3" />

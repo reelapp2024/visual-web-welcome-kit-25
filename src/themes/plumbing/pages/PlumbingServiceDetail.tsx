@@ -28,7 +28,8 @@ const PlumbingServiceDetail = ({ serviceId: propServiceId, serviceName, serviceD
   const [serviceId, setServiceId] = useState(propServiceId || "");
   
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+    const projectId = import.meta.env.VITE_PROJECT_ID;
+
   
   const displayServiceName = serviceName || humanizeString(urlServiceName) || 'Plumbing Repair';
   const displayServiceDescription = serviceDescription || serviceDetails?.service_description || 'Professional plumbing services for homes and businesses with 24/7 emergency response. Licensed plumbers with years of experience.';

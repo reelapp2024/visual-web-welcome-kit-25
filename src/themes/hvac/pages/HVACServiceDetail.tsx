@@ -29,7 +29,8 @@ const HVACServiceDetail = ({ serviceId: propServiceId, serviceName, serviceDescr
   const [serviceId, setServiceId] = useState(propServiceId || "");
   
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+    const projectId = import.meta.env.VITE_PROJECT_ID;
+
   
   const displayServiceName = serviceName || humanizeString(urlServiceName) || 'HVAC Installation';
   const displayServiceDescription = serviceDescription || serviceDetails?.service_description || 'Professional HVAC installation and repair services with energy-efficient systems and expert technicians. Licensed and insured contractors.';

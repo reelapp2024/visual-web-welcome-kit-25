@@ -52,7 +52,7 @@ const CleaningState = () => {
       <CleaningHeader />
       
       {/* Breadcrumb */}
-      <div className="bg-gray-50 py-4">
+      <div className="bg-gray-50 py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb>
             <BreadcrumbList>
@@ -72,7 +72,7 @@ const CleaningState = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{displayStateName}</BreadcrumbPage>
+                <BreadcrumbPage className="font-medium text-green-600">{displayStateName}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

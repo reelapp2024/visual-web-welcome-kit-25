@@ -1,7 +1,7 @@
 
 import axios from "axios";
-// const apiUrl = "https://aibackend.todaystrends.site"
-const apiUrl = "http://localhost:1111"
+const apiUrl = "https://aibackend.todaystrends.site"
+// const apiUrl = "http://localhost:1111"
 
 export const http = axios.create({
   baseURL: apiUrl,

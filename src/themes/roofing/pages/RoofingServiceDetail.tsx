@@ -28,7 +28,8 @@ const RoofingServiceDetail = ({ serviceId: propServiceId, serviceName, serviceDe
   const [serviceId, setServiceId] = useState(propServiceId || "");
   
   const savedSiteId = localStorage.getItem("currentSiteId");
-  const projectId = savedSiteId || "685cffa53ee7098086538c06";
+    const projectId = import.meta.env.VITE_PROJECT_ID;
+
   
   const displayServiceName = serviceName || humanizeString(urlServiceName) || 'Roof Installation';
   const displayServiceDescription = serviceDescription || serviceDetails?.service_description || 'Professional roof installation and repair services with premium materials and expert craftsmanship. Licensed contractors with decades of experience.';

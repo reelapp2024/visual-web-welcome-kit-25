@@ -1,19 +1,25 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { httpFile } from "../../../config.js";
-import DynamicFAIcon from '../../../extras/DynamicFAIcon.js';
-import { useColors } from '../../../components/DynamicColorProvider';
+import DynamicFAIcon from '../../../extras/DynamicFAIcon.js'; // Adjust if path differs
+import { getProjectId } from '../../../hooks/getProjectId'; // Import the utility
 
 const CleaningRelatedServices = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { colors, isLoading: colorsLoading } = useColors();
+  const location = useLocation(); // 🚀 Track route changes
   const [projectServices, setProjectServices] = useState([]);
-  const [projectCategory, setProjectCategory] = useState("");
 
-  const projectId = import.meta.env.VITE_PROJECT_ID;
-  
+  const savedSiteId = localStorage.getItem("currentSiteId");
+  const [projectId, setProjectId] = useState(null); // Initialize as null
+
+  useEffect(() => {
+    // Get projectId from utility function
+    const id = getProjectId();
+
+    console.log(id, "this is id")
+    setProjectId(id); // Set projectId in state
+  }, []);
+
   const fetchData = async () => {
     try {
       const { data } = await httpFile.post("/webapp/v1/fetch_random_services", {
@@ -28,30 +34,12 @@ const CleaningRelatedServices = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await httpFile.post("/webapp/v1/my_site", {
-          projectId,
-          pageType: "home",
-          reqFrom: "cleaningServices"
-        });
-        if (data.projectInfo && data.projectInfo.serviceType) {
-          setProjectCategory(data.projectInfo.serviceType);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, [projectId]);
-
-  useEffect(() => {
     fetchData();
   }, [projectId]);
 
   useEffect(() => {
     if (location.state) {
-      fetchData();
+      fetchData(); // Re-fetch on route state change
     }
   }, [location]);
 
@@ -69,49 +57,22 @@ const CleaningRelatedServices = () => {
     });
   };
 
+  // Helper to truncate at first period
   const getTruncatedDescription = (text) => {
     if (!text) return '';
     const idx = text.indexOf('.');
     return idx !== -1 ? text.substring(0, idx + 1) : text;
   };
 
-  // Helper function to check if color is gradient
-  const isGradient = (color) => {
-    return color && (color.includes('linear-gradient') || color.includes('radial-gradient'));
-  };
-
-  // Create dynamic styles based on API colors
-  const getDynamicIconStyle = () => {
-    if (!colors) return {};
-    
-    if (isGradient(colors.primary)) {
-      return { background: colors.primary };
-    } else {
-      return { 
-        background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` 
-      };
-    }
-  };
-
-  const getDynamicTextStyle = () => {
-    if (!colors) return '';
-    
-    if (isGradient(colors.primary)) {
-      return 'text-gradient-primary';
-    } else {
-      return 'text-primary-dynamic';
-    }
-  };
-
   return (
     <section className="py-20 bg-gray-50 font-poppins">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${getDynamicTextStyle()}`}>
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
             Related Services
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore our complete range of professional {projectCategory} services
+            Explore our complete range of professional cleaning services
           </p>
         </div>
 
@@ -122,16 +83,13 @@ const CleaningRelatedServices = () => {
               <button
                 key={index}
                 onClick={() => handleServiceClick(service)}
-                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 text-left w-full h-full flex flex-col"
+                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-4 border border-gray-100 text-left w-full"
               >
-                <div 
-                  className="cleaning-service-icon rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300 flex-shrink-0"
-                  style={getDynamicIconStyle()}
-                >
+                <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-full w-16 h-16 flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-all duration-300">
                   <DynamicFAIcon className='white' iconClass={service.fas_fa_icon || ''} />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 flex-shrink-0">{service.service_name}</h3>
-                <p className="text-gray-600 flex-grow">{shortDesc}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{service.service_name}</h3>
+                <p className="text-gray-600">{shortDesc}</p>
               </button>
             );
           })}

@@ -3,12 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { httpFile } from "../../../config.js";
 import { Home, Building, Sparkles, Car, Sofa, Shirt } from 'lucide-react';
+import { getProjectId } from '../../../hooks/getProjectId'; // Import the utility
 
-const CleaningServices = () => {
+const CleaningServices = ({ formattedLocationName = "" }) => {
   const [projectServices, setProjectServices] = useState([]);
   const [projectCategory, setProjectCategory] = useState("");
 
- const projectId = import.meta.env.VITE_PROJECT_ID;
+const [projectId, setProjectId] = useState(null); // Initialize as null
+
+useEffect(() => {
+    // Get projectId from utility function
+    const id = getProjectId();
+
+    console.log(id, "this is id")
+    setProjectId(id); // Set projectId in state
+  }, []);
   // Helper to truncate at first period
   const getTruncatedDescription = (text) => {
     if (!text) return '';
@@ -58,7 +67,7 @@ const CleaningServices = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-6">
-            Our {projectCategory} Services
+            Our {projectCategory} Services {formattedLocationName}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Comprehensive {projectCategory} solutions for you and we make sure for professional results.
@@ -94,7 +103,7 @@ const CleaningServices = () => {
                   </div>
                 </div>
                 <div className="p-8 flex flex-col flex-grow">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 flex-shrink-0">{service.service_name}</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 flex-shrink-0">{service.service_name} {formattedLocationName}</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed flex-grow">{shortDesc}</p>
                 </div>
               </Link>
